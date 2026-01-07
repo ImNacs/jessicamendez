@@ -13,13 +13,23 @@ const navLinks = [
 <header class="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
   <nav class="container mx-auto px-4 h-16 flex items-center justify-between">
     <!-- Logo -->
-    <a href="/" class="group flex items-baseline gap-1.5">
-      <span class="logo-brand-name text-[1.35rem] sm:text-2xl text-gris-800 dark:text-crema-100 transition-colors group-hover:text-verde-700 dark:group-hover:text-verde-400">
-        Jessica
-      </span>
-      <span class="logo-brand-surname text-[1.35rem] sm:text-2xl text-verde-700 dark:text-verde-400 transition-colors group-hover:text-verde-600 dark:group-hover:text-verde-300">
-        Mendez
-      </span>
+    <a href="/" class="group flex items-center gap-2">
+      <svg
+        class="w-6 h-6 sm:w-7 sm:h-7 text-verde-600 dark:text-verde-400 transition-colors group-hover:text-verde-500 dark:group-hover:text-verde-300"
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+      >
+        <path d="M17,8C8,10 5.9,16.17 3.82,21.34L5.71,22L6.66,19.7C7.14,19.87 7.64,20 8,20C19,20 22,3 22,3C21,5 14,5.25 9,6.25C4,7.25 2,11.5 2,13.5C2,15.5 3.75,17.25 3.75,17.25C7,8 17,8 17,8Z"/>
+      </svg>
+      <div class="flex items-baseline gap-1">
+        <span class="logo-brand-name text-[1.35rem] sm:text-2xl text-gris-800 dark:text-crema-100 transition-colors group-hover:text-verde-700 dark:group-hover:text-verde-400">
+          Jessica
+        </span>
+        <span class="logo-brand-surname text-[1.35rem] sm:text-2xl text-verde-700 dark:text-verde-400 transition-colors group-hover:text-verde-600 dark:group-hover:text-verde-300">
+          Mendez
+        </span>
+      </div>
     </a>
 
     <!-- Desktop Navigation -->
