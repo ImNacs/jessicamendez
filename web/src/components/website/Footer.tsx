@@ -23,7 +23,7 @@ export function Footer() {
               <Leaf className="h-6 w-6 text-rosa-300 dark:text-rosa-400" />
               <span className="flex items-baseline gap-1.5">
                 <span className="logo-brand-name text-xl text-crema-100">Jessica</span>
-                <span className="logo-brand-surname text-xl text-rosa-400">Méndez</span>
+                <span className="logo-brand-surname text-xl text-verde-400">Méndez</span>
               </span>
             </div>
             <p className="text-verde-200 dark:text-verde-300 text-sm mb-2">
