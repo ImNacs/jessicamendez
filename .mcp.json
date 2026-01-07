@@ -1,0 +1,47 @@
+
+{
+  "mcpServers": {
+    "shadcn-components": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "jpisnice/shadcn-ui-mcp-server"
+      ]
+    },
+    "shadcn-themes": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "shadcn@canary",
+        "registry:mcp"
+      ],
+      "env": {
+        "REGISTRY_URL": "https://tweakcn.com/r/themes/registry.json"
+      }
+    },
+    "mastra": {
+      "command": "npx",
+      "args": ["-y", "@mastra/mcp-docs-server"]
+    },
+    "copilotKit": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://mcp.copilotkit.ai"
+      ]
+    },
+    "playwright": {
+          "type": "stdio",
+          "command": "npx",
+          "args": [
+            "@playwright/mcp@latest",
+            "--isolated",
+            "--storage-state=path/to/storage.json"
+          ]
+    },
+    "chrome-devtools": {
+      "command": "xvfb-run",
+      "args": ["-a", "pnpm", "dlx", "chrome-devtools-mcp@latest", "--isolated"]
+    }
+  }
+}

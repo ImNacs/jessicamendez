@@ -1,0 +1,79 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Jessica Méndez | Consultora en Medioambiente y Sostenibilidad",
+  description = "Bióloga Jessica Méndez - Consultora independiente en medio ambiente y sostenibilidad. Especialista en ESG, regulación ambiental, IFC Performance Standards y Principios de Ecuador."
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Jessica Viridiana Méndez Gómez" />
+    <meta name="keywords" content="consultora ambiental, ESG, sostenibilidad, medio ambiente, IFC, regulación ambiental, México" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jessicamendez.bio" />
+    <meta property="og:image" content="/og-image.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href="https://jessicamendez.bio" />
+    <title>{title}</title>
+
+    <!-- View Transitions -->
+    <ViewTransitions />
+  </head>
+  <body class="min-h-screen bg-crema-50 text-gris-900">
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  /* View Transition animations */
+  ::view-transition-old(root) {
+    animation: fade-out 0.3s ease-out forwards;
+  }
+
+  ::view-transition-new(root) {
+    animation: fade-in 0.3s ease-in forwards;
+  }
+
+  @keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: rgba(91, 124, 91, 0.2);
+    color: #333333;
+  }
+</style>

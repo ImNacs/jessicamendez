@@ -1,0 +1,266 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/* Fonts */
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource/cormorant-garamond/600.css";
+@import "@fontsource/cormorant-garamond/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* Font families - V2 */
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
+
+  /* ============================================
+     PALETA DE COLORES V2 - BROCHURE
+     Basada en el brochure de Jessica Méndez
+     ============================================ */
+
+  /* Verde Bosque - Color principal del brochure */
+  --color-verde-50: #f4f7f4;
+  --color-verde-100: #e6ebe6;
+  --color-verde-200: #cdd8cd;
+  --color-verde-300: #a8bda8;
+  --color-verde-400: #7d9b7d;
+  --color-verde-500: #5b7c5b;
+  --color-verde-600: #496349;
+  --color-verde-700: #3c503c;
+  --color-verde-800: #334233;
+  --color-verde-900: #2b372b;
+
+  /* Rosa Terracota - Color de acento del brochure */
+  --color-rosa-50: #fdf8f7;
+  --color-rosa-100: #f9f0ee;
+  --color-rosa-200: #f2ddd8;
+  --color-rosa-300: #e6c4bc;
+  --color-rosa-400: #d4a598;
+  --color-rosa-500: #c4958a;
+  --color-rosa-600: #b07a6c;
+  --color-rosa-700: #936558;
+  --color-rosa-800: #7a544a;
+  --color-rosa-900: #664840;
+
+  /* Crema/Beige - Fondos suaves */
+  --color-crema-50: #fefdfb;
+  --color-crema-100: #faf8f5;
+  --color-crema-200: #f5f1eb;
+  --color-crema-300: #ede6dc;
+  --color-crema-400: #e2d7c9;
+
+  /* Gris - Textos */
+  --color-gris-50: #f9fafb;
+  --color-gris-100: #f3f4f6;
+  --color-gris-200: #e5e7eb;
+  --color-gris-300: #d1d5db;
+  --color-gris-400: #9ca3af;
+  --color-gris-500: #6b7280;
+  --color-gris-600: #4b5563;
+  --color-gris-700: #374151;
+  --color-gris-800: #1f2937;
+  --color-gris-900: #333333;
+
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* shadcn mappings */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 0.625rem;
+  --background: #fefdfb;
+  --foreground: #333333;
+  --card: #ffffff;
+  --card-foreground: #333333;
+  --popover: #ffffff;
+  --popover-foreground: #333333;
+  --primary: #5b7c5b;
+  --primary-foreground: #ffffff;
+  --secondary: #fdf8f7;
+  --secondary-foreground: #333333;
+  --muted: #f5f1eb;
+  --muted-foreground: #6b7280;
+  --accent: #c4958a;
+  --accent-foreground: #ffffff;
+  --destructive: #dc2626;
+  --border: #ede6dc;
+  --input: #ede6dc;
+  --ring: #c4958a;
+}
+
+.dark {
+  --background: #1a1a1a;
+  --foreground: #fefdfb;
+  --card: #262626;
+  --card-foreground: #fefdfb;
+  --popover: #262626;
+  --popover-foreground: #fefdfb;
+  --primary: #7d9b7d;
+  --primary-foreground: #1a1a1a;
+  --secondary: #374151;
+  --secondary-foreground: #fefdfb;
+  --muted: #374151;
+  --muted-foreground: #9ca3af;
+  --accent: #d4a598;
+  --accent-foreground: #1a1a1a;
+  --destructive: #ef4444;
+  --border: #374151;
+  --input: #374151;
+  --ring: #d4a598;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
+/* Custom animations V2 */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes leaf-sway {
+  0%, 100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes pulse-subtle {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-leaf-sway {
+  animation: leaf-sway 4s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+
+/* Gradient backgrounds V2 */
+.bg-gradient-verde {
+  background: linear-gradient(135deg, #5b7c5b 0%, #496349 50%, #3c503c 100%);
+}
+
+.bg-gradient-rosa {
+  background: linear-gradient(135deg, #c4958a 0%, #b07a6c 100%);
+}
+
+.bg-gradient-hero-v2 {
+  background: linear-gradient(135deg, #fefdfb 0%, #f5f1eb 50%, #fdf8f7 100%);
+}
+
+.bg-gradient-section-rosa {
+  background: linear-gradient(180deg, #fefdfb 0%, #fdf8f7 50%, #f9f0ee 100%);
+}
+
+/* Text gradients */
+.text-gradient-verde {
+  background: linear-gradient(135deg, #5b7c5b 0%, #3c503c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Decorative elements */
+.blob-verde {
+  background: radial-gradient(circle, rgba(91, 124, 91, 0.15) 0%, transparent 70%);
+}
+
+.blob-rosa {
+  background: radial-gradient(circle, rgba(196, 149, 138, 0.15) 0%, transparent 70%);
+}
+
+/* Card hover effects V2 */
+.card-hover-v2 {
+  transition: all 0.3s ease;
+}
+
+.card-hover-v2:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px -12px rgba(91, 124, 91, 0.25);
+}
+
+/* Section dividers */
+.section-divider-leaf {
+  position: relative;
+}
+
+.section-divider-leaf::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #5b7c5b, transparent);
+}
