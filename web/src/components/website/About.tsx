@@ -46,7 +46,7 @@ export function About() {
               {/* Image */}
               <div className="relative bg-white dark:bg-verde-900/50 p-2 rounded-2xl shadow-lg dark:shadow-verde-900/30">
                 <img
-                  src="/jessicamendez.png"
+                  src="/jessicamendez.webp"
                   alt="Jessica Méndez - Bióloga y Consultora Ambiental"
                   className="w-full h-auto rounded-xl"
                   loading="lazy"
