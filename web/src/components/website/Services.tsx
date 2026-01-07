@@ -229,7 +229,7 @@ export function Services() {
           </p>
           <Button
             variant="outline"
-            className="border-verde-300 dark:border-verde-600 text-verde-700 dark:text-verde-300 hover:bg-verde-50 dark:hover:bg-verde-900/50"
+            className="border-verde-300 dark:border-verde-600 text-verde-700 dark:text-verde-300 hover:bg-verde-100 hover:text-verde-800 dark:hover:bg-verde-900/50 dark:hover:text-verde-200"
             asChild
           >
             <a href="#contacto">Consultar otros servicios</a>
