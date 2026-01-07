@@ -19,4 +19,15 @@ jobs:
           script: |
             cd /root/jessicamendez
             git pull origin main
-            cd web && ~/.bun/bin/bun install && ~/.bun/bin/bun run build
+            cd web
+            ~/.bun/bin/bun install
+
+            # Zero-downtime deployment: build to temp directory
+            rm -rf dist-new
+            ASTRO_OUT_DIR=./dist-new ~/.bun/bin/bun run build
+
+            # Atomic swap (nginx keeps serving old until swap completes)
+            rm -rf dist-old
+            [ -d dist ] && mv dist dist-old
+            mv dist-new dist
+            rm -rf dist-old
