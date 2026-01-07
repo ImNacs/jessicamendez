@@ -1,10 +1,16 @@
 ---
+import { getCollection } from 'astro:content';
+
+// Check if there are any published blog posts
+const publishedPosts = await getCollection('blog', ({ data }) => !data.draft);
+const hasBlogPosts = publishedPosts.length > 0;
+
 const navLinks = [
   { href: '/#inicio', label: 'Inicio' },
   { href: '/#servicios', label: 'Servicios' },
   { href: '/#acerca', label: 'Acerca de mí' },
   { href: '/#experiencia', label: 'Experiencia' },
-  { href: '/blog/', label: 'Blog' },
+  ...(hasBlogPosts ? [{ href: '/blog/', label: 'Blog' }] : []),
 ];
 ---
 
