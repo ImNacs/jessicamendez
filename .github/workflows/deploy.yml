@@ -5,28 +5,43 @@ on:
     branches: [main]
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        working-directory: ./web
+        run: bun install --frozen-lockfile
+
+      - name: Build site
+        working-directory: ./web
+        run: bun run build
+
       - name: Deploy to droplet
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 165.227.201.91
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "web/dist/*"
+          target: "/root/jessicamendez/web/dist-new"
+          strip_components: 2
+
+      - name: Atomic swap on server
         uses: appleboy/ssh-action@v1.2.1
         with:
           host: 165.227.201.91
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          use_insecure_cipher: true
-          command_timeout: 15m
           script: |
-            cd /root/jessicamendez
-            git pull origin main
-            cd web
-            ~/.bun/bin/bun install
-
-            # Zero-downtime deployment: build to temp directory
-            rm -rf dist-new
-            ASTRO_OUT_DIR=./dist-new ~/.bun/bin/bun run build
-
-            # Atomic swap (nginx keeps serving old until swap completes)
+            cd /root/jessicamendez/web
             rm -rf dist-old
             [ -d dist ] && mv dist dist-old
             mv dist-new dist
