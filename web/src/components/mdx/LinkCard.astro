@@ -1,0 +1,46 @@
+---
+/**
+ * LinkCard - Styled link card for MDX content
+ * Usage: <LinkCard href="/contacto" title="Contactar" description="Agenda una consulta" />
+ */
+interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  external?: boolean;
+}
+
+const { href, title, description, external = false } = Astro.props;
+const isExternal = external || href.startsWith('http');
+---
+
+<a
+  href={href}
+  target={isExternal ? '_blank' : undefined}
+  rel={isExternal ? 'noopener noreferrer' : undefined}
+  class="not-prose group block my-6 p-4 sm:p-5 rounded-xl border-l-4 border border-verde-300 dark:border-verde-700 border-l-verde-500 dark:border-l-verde-500 bg-verde-50 dark:bg-verde-900/40 hover:bg-verde-100 dark:hover:bg-verde-800/50 hover:border-verde-400 dark:hover:border-verde-600 transition-all duration-200 shadow-sm hover:shadow-md"
+>
+  <div class="flex items-center justify-between gap-4">
+    <div class="flex-1 min-w-0">
+      <p class="font-semibold text-verde-800 dark:text-verde-100 group-hover:text-verde-700 dark:group-hover:text-verde-200 transition-colors">
+        {title}
+        {isExternal && (
+          <span class="inline-block ml-1 opacity-70">↗</span>
+        )}
+      </p>
+      {description && (
+        <p class="text-sm text-gris-600 dark:text-crema-200 mt-1 line-clamp-2">
+          {description}
+        </p>
+      )}
+    </div>
+    <svg
+      class="w-5 h-5 flex-shrink-0 text-verde-500 dark:text-verde-400 group-hover:translate-x-1 transition-transform"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+  </div>
+</a>

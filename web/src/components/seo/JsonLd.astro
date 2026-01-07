@@ -1,0 +1,114 @@
+---
+/**
+ * JsonLd Component
+ * Structured data for SEO (Schema.org)
+ */
+import { profile } from '@/lib/utils';
+
+interface BlogPostData {
+  headline: string;
+  description: string;
+  datePublished: string;
+  dateModified?: string;
+  image?: string;
+  url: string;
+  category?: string;
+  tags?: string[];
+}
+
+interface Props {
+  type: 'BlogPosting' | 'WebSite' | 'Person' | 'BreadcrumbList';
+  data?: BlogPostData;
+  breadcrumbs?: Array<{ name: string; url: string }>;
+}
+
+const { type, data, breadcrumbs } = Astro.props;
+
+function generateSchema() {
+  const baseUrl = 'https://jessicamendez.bio';
+
+  if (type === 'BlogPosting' && data) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BlogPosting',
+      headline: data.headline,
+      description: data.description,
+      datePublished: data.datePublished,
+      dateModified: data.dateModified || data.datePublished,
+      author: {
+        '@type': 'Person',
+        name: profile.name,
+        url: baseUrl,
+        jobTitle: profile.title,
+      },
+      publisher: {
+        '@type': 'Person',
+        name: profile.name,
+        url: baseUrl,
+      },
+      image: data.image || `${baseUrl}/og-image.png`,
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': data.url,
+      },
+      inLanguage: 'es-MX',
+      ...(data.category && { articleSection: data.category }),
+      ...(data.tags?.length && { keywords: data.tags.join(', ') }),
+    };
+  }
+
+  if (type === 'WebSite') {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'Jessica Mendez | Consultora Ambiental',
+      url: baseUrl,
+      description: profile.tagline,
+      author: {
+        '@type': 'Person',
+        name: profile.name,
+      },
+      inLanguage: 'es-MX',
+    };
+  }
+
+  if (type === 'Person') {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: profile.name,
+      url: baseUrl,
+      jobTitle: profile.title,
+      email: profile.email,
+      telephone: profile.phone,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Ciudad de Mexico',
+        addressCountry: 'MX',
+      },
+      sameAs: [profile.linkedin],
+    };
+  }
+
+  if (type === 'BreadcrumbList' && breadcrumbs) {
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: breadcrumbs.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        item: item.url,
+      })),
+    };
+  }
+
+  return null;
+}
+
+const schema = generateSchema();
+---
+
+{schema && (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+)}

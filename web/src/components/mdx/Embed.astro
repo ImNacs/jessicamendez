@@ -1,0 +1,49 @@
+---
+/**
+ * Embed - Responsive embed container for videos, maps, and other iframes
+ * Usage: <Embed src="https://youtube.com/embed/..." title="Video title" />
+ *
+ * Supports: YouTube, Vimeo, Google Maps, Datawrapper, and any iframe-based embed
+ */
+interface Props {
+  src: string;
+  title: string;
+  aspectRatio?: '16:9' | '4:3' | '1:1' | '9:16';
+  allow?: string;
+}
+
+const {
+  src,
+  title,
+  aspectRatio = '16:9',
+  allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+} = Astro.props;
+
+const aspectRatioClasses = {
+  '16:9': 'pb-[56.25%]',
+  '4:3': 'pb-[75%]',
+  '1:1': 'pb-[100%]',
+  '9:16': 'pb-[177.78%]',
+};
+---
+
+<div class="not-prose my-8">
+  <div class:list={[
+    'relative h-0 overflow-hidden rounded-xl',
+    'border border-verde-200/50 dark:border-verde-700/50',
+    'shadow-md dark:shadow-lg dark:shadow-black/20',
+    aspectRatioClasses[aspectRatio]
+  ]}>
+    <iframe
+      src={src}
+      title={title}
+      loading="lazy"
+      allow={allow}
+      allowfullscreen
+      class="absolute top-0 left-0 w-full h-full border-0 rounded-xl"
+    />
+  </div>
+  <p class="mt-2 text-center text-sm italic text-gris-500 dark:text-crema-400">
+    {title}
+  </p>
+</div>

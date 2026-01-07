@@ -1,0 +1,10 @@
+# robots.txt for jessicamendez.bio
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://jessicamendez.bio/sitemap-index.xml
+
+# Disallow draft content and API routes
+Disallow: /draft/
+Disallow: /api/

@@ -1,0 +1,45 @@
+---
+/**
+ * CategoryNav - Category navigation for blog
+ */
+import { categories, categoryConfig } from '@/lib/blog';
+
+interface Props {
+  currentCategory?: string;
+}
+
+const { currentCategory } = Astro.props;
+---
+
+<nav class="flex overflow-x-auto gap-2 sm:gap-3 pb-2 sm:pb-0 sm:flex-wrap sm:justify-center scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+  <a
+    href="/blog/"
+    class:list={[
+      'shrink-0 min-h-[44px] px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center',
+      !currentCategory
+        ? 'bg-verde-600 text-white shadow-md'
+        : 'bg-gris-100 dark:bg-verde-900/30 text-gris-600 dark:text-crema-300 hover:bg-gris-200 dark:hover:bg-verde-800/50'
+    ]}
+  >
+    Todos
+  </a>
+
+  {categories.map((cat) => {
+    const config = categoryConfig[cat];
+    const isActive = currentCategory === cat;
+
+    return (
+      <a
+        href={`/blog/categoria/${cat.toLowerCase()}/`}
+        class:list={[
+          'shrink-0 min-h-[44px] px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center',
+          isActive
+            ? 'bg-verde-600 text-white shadow-md'
+            : 'bg-gris-100 dark:bg-verde-900/30 text-gris-600 dark:text-crema-300 hover:bg-gris-200 dark:hover:bg-verde-800/50'
+        ]}
+      >
+        {config.name}
+      </a>
+    );
+  })}
+</nav>

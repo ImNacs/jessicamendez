@@ -1,0 +1,247 @@
+---
+/**
+ * Individual Blog Post Page
+ * Dynamic route for each blog post
+ */
+import { getCollection, render } from 'astro:content';
+import BlogLayout from '@/layouts/BlogLayout.astro';
+import PostMeta from '@/components/blog/PostMeta.astro';
+import RelatedPosts from '@/components/blog/RelatedPosts.astro';
+import CategoryBadge from '@/components/blog/CategoryBadge.astro';
+import { ShareButtons, ReadingProgress, MobileBottomToolbar, TableOfContents } from '@/components/blog';
+import JsonLd from '@/components/seo/JsonLd.astro';
+import { calculateReadingTime, categoryConfig } from '@/lib/blog';
+import { profile } from '@/lib/utils';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { id: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const readingTime = post.body ? calculateReadingTime(post.body) : 5;
+
+// Transform headings for TOC components
+const tocHeadings = headings
+  .filter((h) => h.depth >= 2 && h.depth <= 3)
+  .map((h) => ({
+    id: h.slug,
+    text: h.text,
+    level: h.depth,
+  }));
+
+// Get related posts (same category, exclude current)
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const relatedPosts = allPosts
+  .filter((p) => p.id !== post.id && p.data.category === post.data.category)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const canonicalUrl = post.data.canonicalUrl || `https://jessicamendez.bio/blog/${post.id}/`;
+
+// Breadcrumbs
+const breadcrumbs = [
+  { name: 'Inicio', url: 'https://jessicamendez.bio/' },
+  { name: 'Blog', url: 'https://jessicamendez.bio/blog/' },
+  { name: categoryConfig[post.data.category]?.name || post.data.category, url: `https://jessicamendez.bio/blog/categoria/${post.data.category.toLowerCase()}/` },
+  { name: post.data.title, url: canonicalUrl },
+];
+
+// Format date
+const formattedDate = post.data.pubDate.toLocaleDateString('es-MX', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
+---
+
+<BlogLayout
+  title={`${post.data.title} | Jessica Mendez`}
+  description={post.data.description}
+  canonicalUrl={canonicalUrl}
+  ogImage={post.data.heroImage?.src}
+  ogType="article"
+  publishedTime={post.data.pubDate}
+  modifiedTime={post.data.updatedDate}
+  keywords={post.data.tags}
+>
+  <JsonLd
+    slot="head"
+    type="BlogPosting"
+    data={{
+      headline: post.data.title,
+      description: post.data.description,
+      datePublished: post.data.pubDate.toISOString(),
+      dateModified: (post.data.updatedDate || post.data.pubDate).toISOString(),
+      image: post.data.heroImage?.src,
+      url: canonicalUrl,
+      category: post.data.category,
+      tags: post.data.tags,
+    }}
+  />
+  <JsonLd slot="head" type="BreadcrumbList" breadcrumbs={breadcrumbs} />
+
+  <!-- Reading Progress Bar -->
+  <ReadingProgress client:load />
+
+  <article class="min-h-screen">
+    <!-- Header Section -->
+    <header class="max-w-5xl mx-auto px-4 sm:px-6 pt-24 pb-8 border-b border-verde-200 dark:border-verde-800">
+      <!-- Breadcrumbs -->
+      <nav aria-label="Breadcrumb" class="mb-6 animate-fade-in-up">
+        <ol class="flex flex-wrap items-center gap-2 text-sm">
+          <li>
+            <a href="/" class="text-gris-500 dark:text-crema-400 hover:text-verde-600 dark:hover:text-verde-400 transition-colors">
+              Inicio
+            </a>
+          </li>
+          <li aria-hidden="true" class="text-gris-400 dark:text-gris-600">/</li>
+          <li>
+            <a href="/blog/" class="text-gris-500 dark:text-crema-400 hover:text-verde-600 dark:hover:text-verde-400 transition-colors">
+              Blog
+            </a>
+          </li>
+          <li aria-hidden="true" class="text-gris-400 dark:text-gris-600">/</li>
+          <li aria-current="page" class="text-gris-700 dark:text-crema-200 font-medium truncate max-w-[200px] sm:max-w-none">
+            {post.data.title}
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Category Badge -->
+      <div class="mb-4 animate-fade-in-up" style="animation-delay: 50ms">
+        <CategoryBadge category={post.data.category} size="lg" />
+      </div>
+
+      <!-- Title -->
+      <h1
+        class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gris-900 dark:text-crema-100 mb-4 leading-tight animate-fade-in-up"
+        style="animation-delay: 100ms"
+        transition:name={`blog-title-${post.id}`}
+      >
+        {post.data.title}
+      </h1>
+
+      <!-- Description -->
+      <p class="text-base sm:text-lg text-gris-600 dark:text-crema-300 mb-6 max-w-3xl animate-fade-in-up" style="animation-delay: 150ms">
+        {post.data.description}
+      </p>
+
+      <!-- Metadata -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gris-500 dark:text-crema-400 animate-fade-in-up" style="animation-delay: 200ms">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formattedDate}
+        </time>
+        <span>•</span>
+        <span>{readingTime} min de lectura</span>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8">
+      <div class="flex flex-col xl:flex-row gap-8">
+        <!-- Article Content -->
+        <div class="flex-1 min-w-0 max-w-3xl">
+          <!-- Hero Image -->
+          {post.data.heroImage && (
+            <div class="mb-8 lg:mb-12 animate-fade-in-up" style="animation-delay: 250ms">
+              <img
+                src={post.data.heroImage.src}
+                alt={post.data.heroImageAlt || post.data.title}
+                class="w-full rounded-xl border border-verde-200 dark:border-verde-800 shadow-sm"
+                loading="eager"
+                fetchpriority="high"
+                transition:name={`blog-image-${post.id}`}
+              />
+            </div>
+          )}
+
+          <!-- Article Content -->
+          <div class="prose prose-verde dark:prose-invert max-w-none">
+            <Content />
+          </div>
+
+          <!-- Tags -->
+          {post.data.tags.length > 0 && (
+            <div class="mt-12 pt-8 border-t border-verde-200 dark:border-verde-800">
+              <div class="flex flex-wrap gap-2">
+                {post.data.tags.map((tag) => (
+                  <span class="px-3 py-1 text-sm bg-verde-100 dark:bg-verde-900/30 text-verde-700 dark:text-verde-300 rounded-full">
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <!-- Share Buttons (Desktop) -->
+          <div class="mt-8 hidden xl:block">
+            <ShareButtons url={canonicalUrl} title={post.data.title} client:visible />
+          </div>
+
+          <!-- Author Box -->
+          <div class="mt-12">
+            <div class="p-6 bg-crema-100 dark:bg-verde-900/30 rounded-2xl border border-verde-200 dark:border-verde-800 flex flex-col sm:flex-row items-center sm:items-start gap-4">
+              <img
+                src="/jessicamendez.png"
+                alt={profile.name}
+                class="w-20 h-20 rounded-full object-cover border-4 border-white dark:border-verde-800 shadow-lg flex-shrink-0"
+                loading="lazy"
+              />
+              <div class="text-center sm:text-left">
+                <p class="font-serif text-xl text-verde-800 dark:text-verde-300 font-semibold">
+                  {profile.name}
+                </p>
+                <p class="text-gris-600 dark:text-crema-300 mb-2">
+                  {profile.title}
+                </p>
+                <p class="text-sm text-gris-500 dark:text-crema-400">
+                  {profile.tagline}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Related Posts -->
+          <RelatedPosts posts={relatedPosts} />
+
+          <!-- Back to Blog CTA - Desktop only -->
+          <footer class="hidden xl:block mt-12 pt-8 border-t border-verde-200 dark:border-verde-800">
+            <a
+              href="/blog/"
+              class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-verde-100 dark:bg-verde-900/50 border border-verde-200 dark:border-verde-800 text-verde-700 dark:text-verde-300 hover:bg-verde-200 dark:hover:bg-verde-900 transition-all"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Ver todos los artículos
+            </a>
+          </footer>
+
+          <!-- Spacer for Mobile Bottom Toolbar -->
+          <div class="xl:hidden h-24" aria-hidden="true"></div>
+        </div>
+
+        <!-- Table of Contents Sidebar - Desktop only -->
+        {tocHeadings.length > 0 && (
+          <aside class="w-64 flex-shrink-0 hidden xl:block">
+            <TableOfContents headings={tocHeadings} client:load />
+          </aside>
+        )}
+      </div>
+    </div>
+  </article>
+
+  <!-- Mobile Bottom Toolbar -->
+  <MobileBottomToolbar
+    headings={tocHeadings}
+    shareUrl={canonicalUrl}
+    shareTitle={post.data.title}
+    showBackButton={true}
+    client:load
+  />
+</BlogLayout>

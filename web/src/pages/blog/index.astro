@@ -1,0 +1,92 @@
+---
+/**
+ * Blog Index Page
+ * Listing of all blog posts with pagination and category filter
+ */
+import { getCollection } from 'astro:content';
+import BlogLayout from '@/layouts/BlogLayout.astro';
+import BlogCard from '@/components/blog/BlogCard.astro';
+import CategoryNav from '@/components/blog/CategoryNav.astro';
+import Pagination from '@/components/blog/Pagination.astro';
+import JsonLd from '@/components/seo/JsonLd.astro';
+
+const POSTS_PER_PAGE = 9;
+const currentPage = Number(Astro.url.searchParams.get('page')) || 1;
+
+// Get all published posts, sorted by date
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
+const posts = allPosts.slice(
+  (currentPage - 1) * POSTS_PER_PAGE,
+  currentPage * POSTS_PER_PAGE
+);
+
+// Get featured posts for hero section
+const featuredPosts = allPosts.filter((p) => p.data.featured).slice(0, 2);
+
+const title = 'Blog | Jessica Mendez - Consultora Ambiental';
+const description = 'Articulos sobre ESG, regulacion ambiental, IFC Performance Standards, sostenibilidad y gestion ambiental en Mexico y Latinoamerica.';
+---
+
+<BlogLayout title={title} description={description}>
+  <JsonLd slot="head" type="WebSite" />
+
+  <main class="min-h-screen">
+    {/* Hero Section - Simplified KISS */}
+    <section class="pt-24 sm:pt-28 pb-8 sm:pb-12 bg-white dark:bg-[#151a15]">
+      <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gris-900 dark:text-crema-100 mb-3">
+            Blog
+          </h1>
+          <p class="text-base sm:text-lg text-gris-600 dark:text-crema-300">
+            Perspectivas sobre medio ambiente, sostenibilidad y regulación ambiental
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* Category Navigation */}
+    <section class="py-4 sm:py-6 bg-crema-50 dark:bg-[#151a15] border-b border-border">
+      <div class="container mx-auto px-4">
+        <CategoryNav />
+      </div>
+    </section>
+
+    {/* Posts Grid */}
+    <section class="py-12 sm:py-16 bg-crema-50 dark:bg-[#151a15]">
+      <div class="container mx-auto px-4">
+        {posts.length > 0 ? (
+          <>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {posts.map((post, index) => (
+                <BlogCard
+                  post={post}
+                  index={index}
+                  featured={featuredPosts.includes(post) && currentPage === 1}
+                />
+              ))}
+            </div>
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath="/blog/"
+            />
+          </>
+        ) : (
+          <div class="text-center py-16">
+            <p class="text-lg text-gris-500 dark:text-crema-400">
+              Aun no hay articulos publicados.
+            </p>
+            <p class="text-gris-400 dark:text-crema-500 mt-2">
+              Vuelve pronto para nuevas publicaciones.
+            </p>
+          </div>
+        )}
+      </div>
+    </section>
+  </main>
+</BlogLayout>

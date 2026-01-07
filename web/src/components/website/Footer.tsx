@@ -2,11 +2,12 @@ import { Leaf, Mail, Phone, Linkedin } from 'lucide-react';
 import { profile } from '@/lib/utils';
 
 const navLinks = [
-  { href: '#inicio', label: 'Inicio' },
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#acerca', label: 'Acerca de mí' },
-  { href: '#experiencia', label: 'Experiencia' },
-  { href: '#contacto', label: 'Contacto' },
+  { href: '/#inicio', label: 'Inicio' },
+  { href: '/#servicios', label: 'Servicios' },
+  { href: '/#acerca', label: 'Acerca de mí' },
+  { href: '/#experiencia', label: 'Experiencia' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/#contacto', label: 'Contacto' },
 ];
 
 export function Footer() {

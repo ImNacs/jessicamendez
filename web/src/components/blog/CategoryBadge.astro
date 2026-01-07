@@ -1,0 +1,43 @@
+---
+/**
+ * CategoryBadge - Styled category badge
+ */
+import { categoryConfig } from '@/lib/blog';
+
+interface Props {
+  category: string;
+  size?: 'sm' | 'md';
+  linked?: boolean;
+}
+
+const { category, size = 'md', linked = true } = Astro.props;
+
+const config = categoryConfig[category] || {
+  name: category,
+  bgLight: 'bg-gris-100',
+  bgDark: 'dark:bg-gris-800',
+  textLight: 'text-gris-700',
+  textDark: 'dark:text-gris-300',
+};
+
+const sizeClasses = size === 'sm'
+  ? 'px-2 py-0.5 text-xs'
+  : 'px-3 py-1 text-sm';
+
+const baseClasses = `inline-flex items-center rounded-full font-medium transition-all duration-200 ${sizeClasses} ${config.bgLight} ${config.bgDark} ${config.textLight} ${config.textDark}`;
+
+const href = `/blog/categoria/${category.toLowerCase()}/`;
+---
+
+{linked ? (
+  <a
+    href={href}
+    class:list={[baseClasses, 'hover:scale-105 hover:shadow-sm']}
+  >
+    {config.name}
+  </a>
+) : (
+  <span class={baseClasses}>
+    {config.name}
+  </span>
+)}

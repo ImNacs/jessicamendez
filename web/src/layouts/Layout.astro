@@ -38,28 +38,41 @@ const {
     <link rel="canonical" href="https://jessicamendez.bio" />
     <title>{title}</title>
 
+    <!-- Theme script - MUST be in head to prevent flash during View Transitions -->
+    <script is:inline>
+      (function() {
+        // Prevent multiple initializations
+        if (window.__themeInitialized) return;
+        window.__themeInitialized = true;
+
+        const getThemePreference = () => {
+          if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+            return localStorage.getItem('theme');
+          }
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
+
+        const applyTheme = () => {
+          const isDark = getThemePreference() === 'dark';
+          document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+        };
+
+        // Apply immediately on script load
+        applyTheme();
+
+        // Re-apply after View Transitions swap
+        document.addEventListener('astro:after-swap', applyTheme);
+
+        // Only observe user-initiated theme changes (from toggle button)
+        // The toggle button should call: localStorage.setItem('theme', newTheme)
+        // and then toggle the class, which this observer will NOT interfere with
+      })();
+    </script>
+
     <!-- View Transitions -->
     <ViewTransitions />
   </head>
   <body class="min-h-screen bg-background text-foreground">
-    <script is:inline>
-      const getThemePreference = () => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-          return localStorage.getItem('theme');
-        }
-        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      };
-      const isDark = getThemePreference() === 'dark';
-      document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
-
-      if (typeof localStorage !== 'undefined') {
-        const observer = new MutationObserver(() => {
-          const isDark = document.documentElement.classList.contains('dark');
-          localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        });
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-      }
-    </script>
     <slot />
   </body>
 </html>

@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 /* Fonts */
 @import "@fontsource/cormorant-garamond/400.css";
@@ -408,4 +409,13 @@
 /* Dark section divider */
 .dark .section-divider-leaf::after {
   background: linear-gradient(90deg, transparent, #8fb08f, transparent);
+}
+
+/* Scrollbar hide utility for mobile horizontal scroll */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

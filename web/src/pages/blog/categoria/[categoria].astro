@@ -1,0 +1,110 @@
+---
+/**
+ * Category Blog Page
+ * Listing of posts filtered by category
+ */
+import { getCollection } from 'astro:content';
+import BlogLayout from '@/layouts/BlogLayout.astro';
+import BlogCard from '@/components/blog/BlogCard.astro';
+import CategoryNav from '@/components/blog/CategoryNav.astro';
+import Pagination from '@/components/blog/Pagination.astro';
+import JsonLd from '@/components/seo/JsonLd.astro';
+import { categories, categoryConfig } from '@/lib/blog';
+
+export async function getStaticPaths() {
+  return categories.map((category) => ({
+    params: { categoria: category.toLowerCase() },
+    props: { category },
+  }));
+}
+
+const { category } = Astro.props;
+const config = categoryConfig[category];
+
+const POSTS_PER_PAGE = 9;
+const currentPage = Number(Astro.url.searchParams.get('page')) || 1;
+
+// Get posts for this category
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft && data.category === category))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
+const posts = allPosts.slice(
+  (currentPage - 1) * POSTS_PER_PAGE,
+  currentPage * POSTS_PER_PAGE
+);
+
+const title = `${config.name} | Blog | Jessica Mendez`;
+const description = `Articulos sobre ${config.name}. Perspectivas y guias sobre ${config.name.toLowerCase()} en el contexto ambiental mexicano y latinoamericano.`;
+---
+
+<BlogLayout title={title} description={description}>
+  <JsonLd slot="head" type="WebSite" />
+
+  <main class="min-h-screen">
+    {/* Hero Section */}
+    <section class="bg-gradient-hero-v2 dark:bg-gradient-to-b dark:from-[#151a15] dark:to-verde-900/20 pt-28 pb-16">
+      <div class="container mx-auto px-4">
+        <div class="text-center max-w-3xl mx-auto animate-fade-in-up">
+          {/* Breadcrumb */}
+          <nav class="mb-6 text-sm" aria-label="Breadcrumb">
+            <ol class="flex justify-center items-center gap-2 text-gris-500 dark:text-crema-400">
+              <li><a href="/" class="hover:text-verde-600 dark:hover:text-verde-400 transition-colors">Inicio</a></li>
+              <li class="text-gris-400 dark:text-gris-600">/</li>
+              <li><a href="/blog/" class="hover:text-verde-600 dark:hover:text-verde-400 transition-colors">Blog</a></li>
+              <li class="text-gris-400 dark:text-gris-600">/</li>
+              <li class="text-gris-700 dark:text-crema-200">{config.name}</li>
+            </ol>
+          </nav>
+
+          <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif text-gris-900 dark:text-crema-100 mb-4">
+            {config.name}
+          </h1>
+          <p class="text-lg sm:text-xl text-gris-600 dark:text-crema-300">
+            {allPosts.length} {allPosts.length === 1 ? 'articulo' : 'articulos'} en esta categoria
+          </p>
+        </div>
+      </div>
+    </section>
+
+    {/* Category Navigation */}
+    <section class="py-8 bg-white dark:bg-[#151a15] border-b border-border">
+      <div class="container mx-auto px-4">
+        <CategoryNav currentCategory={category} />
+      </div>
+    </section>
+
+    {/* Posts Grid */}
+    <section class="py-12 sm:py-16 bg-crema-50 dark:bg-[#151a15]">
+      <div class="container mx-auto px-4">
+        {posts.length > 0 ? (
+          <>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+              {posts.map((post, index) => (
+                <BlogCard post={post} index={index} />
+              ))}
+            </div>
+
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              basePath={`/blog/categoria/${category.toLowerCase()}/`}
+            />
+          </>
+        ) : (
+          <div class="text-center py-16">
+            <p class="text-lg text-gris-500 dark:text-crema-400">
+              Aun no hay articulos en esta categoria.
+            </p>
+            <a
+              href="/blog/"
+              class="inline-block mt-4 text-verde-600 dark:text-verde-400 hover:underline"
+            >
+              Ver todos los articulos
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+  </main>
+</BlogLayout>

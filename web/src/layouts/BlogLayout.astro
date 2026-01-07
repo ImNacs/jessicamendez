@@ -1,0 +1,454 @@
+---
+/**
+ * BlogLayout - Layout for blog pages
+ * Extends base Layout with blog-specific SEO
+ */
+import { ViewTransitions } from 'astro:transitions';
+import SEOHead from '@/components/seo/SEOHead.astro';
+import JsonLd from '@/components/seo/JsonLd.astro';
+import Header from '@/components/website/Header.astro';
+import { Footer } from '@/components/website';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  publishedTime?: Date;
+  modifiedTime?: Date;
+  noindex?: boolean;
+  keywords?: string[];
+}
+
+const {
+  title,
+  description,
+  canonicalUrl,
+  ogImage,
+  ogType = 'website',
+  publishedTime,
+  modifiedTime,
+  noindex = false,
+  keywords = [],
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <SEOHead
+      title={title}
+      description={description}
+      canonicalUrl={canonicalUrl}
+      ogImage={ogImage}
+      ogType={ogType}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+      noindex={noindex}
+      keywords={keywords}
+    />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Theme script - MUST be in head to prevent flash during View Transitions -->
+    <script is:inline>
+      (function() {
+        // Prevent multiple initializations
+        if (window.__themeInitialized) return;
+        window.__themeInitialized = true;
+
+        const getThemePreference = () => {
+          if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+            return localStorage.getItem('theme');
+          }
+          return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        };
+
+        const applyTheme = () => {
+          const isDark = getThemePreference() === 'dark';
+          document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
+        };
+
+        // Apply immediately on script load
+        applyTheme();
+
+        // Re-apply after View Transitions swap
+        document.addEventListener('astro:after-swap', applyTheme);
+
+        // Only observe user-initiated theme changes (from toggle button)
+        // The toggle button should call: localStorage.setItem('theme', newTheme)
+        // and then toggle the class, which this observer will NOT interfere with
+      })();
+    </script>
+
+    <!-- View Transitions -->
+    <ViewTransitions />
+
+    <!-- JSON-LD slot for pages to inject structured data -->
+    <slot name="head" />
+  </head>
+  <body class="min-h-screen bg-background text-foreground">
+    <Header />
+
+    <slot />
+
+    <Footer client:visible />
+  </body>
+</html>
+
+<style is:global>
+  /* View Transition animations */
+  ::view-transition-old(root) {
+    animation: fade-out 0.3s ease-out forwards;
+  }
+
+  ::view-transition-new(root) {
+    animation: fade-in 0.3s ease-in forwards;
+  }
+
+  @keyframes fade-out {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Smooth scrolling */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: rgba(91, 124, 91, 0.2);
+    color: #333333;
+  }
+
+  .dark ::selection {
+    background-color: rgba(143, 176, 143, 0.3);
+    color: #f5f1eb;
+  }
+
+  /* ============================================
+     PROSE STYLES - Optimized for readability
+     ============================================ */
+
+  /* Base prose configuration */
+  .prose-verde {
+    --tw-prose-body: #374151;
+    --tw-prose-headings: #334233;
+    --tw-prose-lead: #4b5563;
+    --tw-prose-links: #496349;
+    --tw-prose-bold: #1f2937;
+    --tw-prose-counters: #6b7280;
+    --tw-prose-bullets: #5b7c5b;
+    --tw-prose-hr: #e5e7eb;
+    --tw-prose-quotes: #4b5563;
+    --tw-prose-quote-borders: #7d9b7d;
+    --tw-prose-captions: #6b7280;
+    --tw-prose-code: #936558;
+    --tw-prose-pre-code: #f5f1eb;
+    --tw-prose-pre-bg: #1f2937;
+    --tw-prose-th-borders: #d1d5db;
+    --tw-prose-td-borders: #e5e7eb;
+  }
+
+  .dark .prose-verde {
+    --tw-prose-body: #e6ebe6;
+    --tw-prose-headings: #a8bda8;
+    --tw-prose-lead: #cdd8cd;
+    --tw-prose-links: #8fb08f;
+    --tw-prose-bold: #f5f1eb;
+    --tw-prose-counters: #a8a299;
+    --tw-prose-bullets: #7d9b7d;
+    --tw-prose-hr: #3a4339;
+    --tw-prose-quotes: #cdd8cd;
+    --tw-prose-quote-borders: #5b7c5b;
+    --tw-prose-captions: #a8a299;
+    --tw-prose-code: #d4a598;
+    --tw-prose-pre-code: #e6ebe6;
+    --tw-prose-pre-bg: #1c231c;
+    --tw-prose-th-borders: #3a4339;
+    --tw-prose-td-borders: #2b372b;
+  }
+
+  /* Enhanced typography - Optimal line width and spacing */
+  .prose-verde {
+    font-size: 1.0625rem; /* 17px - slightly larger for readability */
+    line-height: 1.8; /* Increased line-height for better readability */
+  }
+
+  @media (min-width: 640px) {
+    .prose-verde {
+      font-size: 1.125rem; /* 18px on larger screens */
+    }
+  }
+
+  /* Headings - Use serif font with proper spacing */
+  .prose-verde h1,
+  .prose-verde h2,
+  .prose-verde h3,
+  .prose-verde h4 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    scroll-margin-top: 5rem;
+  }
+
+  .prose-verde h2 {
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid var(--tw-prose-hr);
+  }
+
+  .prose-verde h3 {
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+  }
+
+  /* Paragraphs - Optimal reading width */
+  .prose-verde p {
+    margin-bottom: 1.5em;
+  }
+
+  /* Lists - Better spacing and bullets */
+  .prose-verde ul,
+  .prose-verde ol {
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+    padding-left: 1.5em;
+  }
+
+  .prose-verde li {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    padding-left: 0.375em;
+  }
+
+  .prose-verde ul > li::marker {
+    color: var(--tw-prose-bullets);
+  }
+
+  /* Links - Underline on hover with smooth transition */
+  .prose-verde a {
+    color: var(--tw-prose-links);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .prose-verde a:hover {
+    border-bottom-color: var(--tw-prose-links);
+  }
+
+  /* External links indicator */
+  .prose-verde a[target="_blank"]::after {
+    content: " ↗";
+    font-size: 0.75em;
+    opacity: 0.6;
+  }
+
+  /* Blockquotes - Styled with left border */
+  .prose-verde blockquote {
+    font-style: italic;
+    border-left-width: 4px;
+    border-left-color: var(--tw-prose-quote-borders);
+    padding-left: 1.5em;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    background-color: rgba(91, 124, 91, 0.05);
+    padding: 1em 1.5em;
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+
+  .dark .prose-verde blockquote {
+    background-color: rgba(143, 176, 143, 0.05);
+  }
+
+  .prose-verde blockquote p:first-of-type::before,
+  .prose-verde blockquote p:last-of-type::after {
+    content: none;
+  }
+
+  /* Code - Inline and blocks */
+  .prose-verde code:not(pre code) {
+    background-color: rgba(147, 101, 88, 0.1);
+    padding: 0.2em 0.4em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-weight: 500;
+  }
+
+  .dark .prose-verde code:not(pre code) {
+    background-color: rgba(212, 165, 152, 0.15);
+  }
+
+  /* Code blocks - Enhanced styling with Shiki dual theme support */
+  .prose-verde pre {
+    border-radius: 0.75rem;
+    padding: 1.25em 1.5em;
+    overflow-x: auto;
+    font-size: 0.875em;
+    line-height: 1.7;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .prose-verde pre {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .prose-verde pre code {
+    background-color: transparent;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  /* Shiki dual theme - Force dark theme colors in dark mode */
+  .dark .astro-code,
+  .dark .astro-code span {
+    color: var(--shiki-dark) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
+
+  /* Shiki light theme base */
+  .astro-code,
+  .astro-code span {
+    color: var(--shiki-light);
+    background-color: var(--shiki-light-bg);
+  }
+
+  /* Tables - Clean styling */
+  .prose-verde table {
+    width: 100%;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    font-size: 0.9375em;
+  }
+
+  .prose-verde th {
+    font-weight: 600;
+    text-align: left;
+    padding: 0.75em 1em;
+    background-color: rgba(91, 124, 91, 0.05);
+  }
+
+  .dark .prose-verde th {
+    background-color: rgba(143, 176, 143, 0.1);
+  }
+
+  .prose-verde td {
+    padding: 0.75em 1em;
+    vertical-align: top;
+  }
+
+  .prose-verde tbody tr {
+    border-bottom: 1px solid var(--tw-prose-td-borders);
+  }
+
+  /* Horizontal rules */
+  .prose-verde hr {
+    margin-top: 3em;
+    margin-bottom: 3em;
+    border-color: var(--tw-prose-hr);
+  }
+
+  /* Strong text */
+  .prose-verde strong {
+    font-weight: 600;
+    color: var(--tw-prose-bold);
+  }
+
+  /* Images */
+  .prose-verde img {
+    border-radius: 0.75rem;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    border: 1px solid rgba(91, 124, 91, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .prose-verde img {
+    border-color: rgba(143, 176, 143, 0.2);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+    /* Subtle glow for visibility against dark bg */
+    background-color: rgba(255, 255, 255, 0.02);
+  }
+
+  /* Figure and captions */
+  .prose-verde figure {
+    margin-top: 2em;
+    margin-bottom: 2em;
+  }
+
+  .prose-verde figure img {
+    margin-bottom: 0;
+  }
+
+  .prose-verde figcaption {
+    text-align: center;
+    font-size: 0.875em;
+    font-style: italic;
+    margin-top: 0.75em;
+    color: #6b7280;
+  }
+
+  .dark .prose-verde figcaption {
+    color: #a8a299;
+  }
+
+  /* Iframes and embeds */
+  .prose-verde iframe {
+    border-radius: 0.75rem;
+    border: 1px solid rgba(91, 124, 91, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    max-width: 100%;
+  }
+
+  .dark .prose-verde iframe {
+    border-color: rgba(143, 176, 143, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Responsive video/embed container */
+  .prose-verde .embed-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(91, 124, 91, 0.15);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .dark .prose-verde .embed-container {
+    border-color: rgba(143, 176, 143, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .prose-verde .embed-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0.75rem;
+    margin: 0;
+    box-shadow: none;
+  }
+</style>

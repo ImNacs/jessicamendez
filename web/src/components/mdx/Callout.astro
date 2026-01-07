@@ -1,0 +1,109 @@
+---
+/**
+ * Callout - Admonition component for MDX content
+ * Usage: <Callout type="info">Your content here</Callout>
+ *
+ * Uses project color palette for consistent dark/light theme support
+ */
+interface Props {
+  type?: 'info' | 'warning' | 'tip' | 'important' | 'note';
+  title?: string;
+}
+
+const { type = 'info', title } = Astro.props;
+
+// Using project palette: verde, rosa, crema, gris
+const config = {
+  info: {
+    icon: '💡',
+    title: 'Información',
+    // Verde palette for info
+    lightBg: 'bg-verde-50',
+    darkBg: 'dark:bg-verde-900/40',
+    lightBorder: 'border-verde-400',
+    darkBorder: 'dark:border-verde-600',
+    lightText: 'text-verde-900',
+    darkText: 'dark:text-verde-100',
+    lightIconBg: 'bg-verde-100',
+    darkIconBg: 'dark:bg-verde-800/60',
+  },
+  warning: {
+    icon: '⚠️',
+    title: 'Advertencia',
+    // Rosa/terracotta for warnings
+    lightBg: 'bg-rosa-50',
+    darkBg: 'dark:bg-rosa-900/40',
+    lightBorder: 'border-rosa-400',
+    darkBorder: 'dark:border-rosa-600',
+    lightText: 'text-rosa-900',
+    darkText: 'dark:text-rosa-100',
+    lightIconBg: 'bg-rosa-100',
+    darkIconBg: 'dark:bg-rosa-800/60',
+  },
+  tip: {
+    icon: '✨',
+    title: 'Consejo',
+    // Verde accent for tips
+    lightBg: 'bg-verde-50',
+    darkBg: 'dark:bg-verde-900/40',
+    lightBorder: 'border-verde-500',
+    darkBorder: 'dark:border-verde-500',
+    lightText: 'text-verde-900',
+    darkText: 'dark:text-verde-100',
+    lightIconBg: 'bg-verde-100',
+    darkIconBg: 'dark:bg-verde-800/60',
+  },
+  important: {
+    icon: '🔔',
+    title: 'Importante',
+    // Rosa for important
+    lightBg: 'bg-rosa-50',
+    darkBg: 'dark:bg-rosa-900/40',
+    lightBorder: 'border-rosa-500',
+    darkBorder: 'dark:border-rosa-500',
+    lightText: 'text-rosa-900',
+    darkText: 'dark:text-rosa-100',
+    lightIconBg: 'bg-rosa-100',
+    darkIconBg: 'dark:bg-rosa-800/60',
+  },
+  note: {
+    icon: '📝',
+    title: 'Nota',
+    // Gris neutral for notes
+    lightBg: 'bg-gris-50',
+    darkBg: 'dark:bg-gris-800/40',
+    lightBorder: 'border-gris-400',
+    darkBorder: 'dark:border-gris-600',
+    lightText: 'text-gris-900',
+    darkText: 'dark:text-gris-100',
+    lightIconBg: 'bg-gris-100',
+    darkIconBg: 'dark:bg-gris-700/60',
+  },
+};
+
+const c = config[type];
+const displayTitle = title || c.title;
+---
+
+<aside class:list={[
+  'not-prose my-6 rounded-xl border-l-4 p-4 sm:p-5',
+  c.lightBg, c.darkBg,
+  c.lightBorder, c.darkBorder,
+]}>
+  <div class="flex items-start gap-3">
+    <span class:list={[
+      'flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-lg',
+      c.lightIconBg, c.darkIconBg,
+    ]}>
+      {c.icon}
+    </span>
+    <div class="flex-1 min-w-0">
+      <p class:list={['font-semibold text-sm mb-1', c.lightText, c.darkText]}>
+        {displayTitle}
+      </p>
+      <div class:list={['text-sm leading-relaxed', c.lightText, c.darkText, 'opacity-90 dark:opacity-95']}>
+        <slot />
+      </div>
+    </div>
+  </div>
+</aside>

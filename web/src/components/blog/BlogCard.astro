@@ -1,0 +1,94 @@
+---
+/**
+ * BlogCard - Post preview card for listings
+ * Uses View Transitions for smooth navigation
+ */
+import type { CollectionEntry } from 'astro:content';
+import { formatDate, calculateReadingTime } from '@/lib/blog';
+import CategoryBadge from './CategoryBadge.astro';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  index?: number;
+  featured?: boolean;
+}
+
+const { post, index = 0, featured = false } = Astro.props;
+const { data } = post;
+
+// Calculate reading time from post body if available
+const readingTime = post.body ? calculateReadingTime(post.body) : 5;
+
+// Animation delay for stagger effect
+const animationDelay = `${index * 100}ms`;
+---
+
+<article
+  class:list={[
+    'group relative bg-card rounded-xl overflow-hidden border border-border',
+    'card-hover-v2 animate-fade-in-up',
+    featured && 'md:col-span-2'
+  ]}
+  style={`animation-delay: ${animationDelay}`}
+>
+  <a href={`/blog/${post.id}/`} class="block">
+    {/* Hero Image */}
+    {data.heroImage && (
+      <div class="relative aspect-video overflow-hidden bg-gris-100 dark:bg-verde-900/30">
+        <img
+          src={data.heroImage.src}
+          alt={data.heroImageAlt || data.title}
+          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+          transition:name={`blog-image-${post.id}`}
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      </div>
+    )}
+
+    {/* Content */}
+    <div class="p-5 sm:p-6">
+      {/* Category & Date */}
+      <div class="flex items-center gap-3 mb-3">
+        <CategoryBadge category={data.category} size="sm" linked={false} />
+        <time
+          datetime={data.pubDate.toISOString()}
+          class="text-xs text-gris-500 dark:text-crema-400"
+        >
+          {formatDate(data.pubDate)}
+        </time>
+      </div>
+
+      {/* Title */}
+      <h3
+        class="font-serif text-lg sm:text-xl text-gris-900 dark:text-crema-100 mb-2 line-clamp-2 group-hover:text-verde-700 dark:group-hover:text-verde-400 transition-colors duration-200"
+        transition:name={`blog-title-${post.id}`}
+      >
+        {data.title}
+      </h3>
+
+      {/* Description */}
+      <p class="text-sm text-gris-600 dark:text-crema-300 line-clamp-2 mb-4">
+        {data.description}
+      </p>
+
+      {/* Footer */}
+      <div class="flex items-center justify-between text-xs text-gris-500 dark:text-crema-400">
+        <span>{readingTime} min de lectura</span>
+        <span class="flex items-center gap-1 text-verde-600 dark:text-verde-400 font-medium group-hover:translate-x-0.5 transition-transform duration-200">
+          Leer más
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </div>
+  </a>
+
+  {/* Featured badge */}
+  {data.featured && (
+    <div class="absolute top-3 right-3 px-2 py-1 bg-rosa-500 text-white text-xs font-medium rounded-full">
+      Destacado
+    </div>
+  )}
+</article>

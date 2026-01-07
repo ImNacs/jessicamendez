@@ -1,0 +1,38 @@
+---
+/**
+ * PostMeta - Post metadata display (date, reading time, category)
+ */
+import { formatDate } from '@/lib/blog';
+import CategoryBadge from './CategoryBadge.astro';
+import { Calendar, Clock } from 'lucide-react';
+
+interface Props {
+  pubDate: Date;
+  category: string;
+  readingTime?: number;
+  size?: 'sm' | 'md';
+}
+
+const { pubDate, category, readingTime, size = 'md' } = Astro.props;
+
+const textSize = size === 'sm' ? 'text-xs' : 'text-sm';
+const iconSize = size === 'sm' ? 'h-3 w-3' : 'h-4 w-4';
+---
+
+<div class:list={['flex flex-wrap items-center gap-3', textSize]}>
+  <CategoryBadge category={category} size={size} />
+
+  <div class="flex items-center gap-1.5 text-gris-500 dark:text-crema-400">
+    <Calendar className={iconSize} />
+    <time datetime={pubDate.toISOString()}>
+      {formatDate(pubDate)}
+    </time>
+  </div>
+
+  {readingTime && (
+    <div class="flex items-center gap-1.5 text-gris-500 dark:text-crema-400">
+      <Clock className={iconSize} />
+      <span>{readingTime} min de lectura</span>
+    </div>
+  )}
+</div>
