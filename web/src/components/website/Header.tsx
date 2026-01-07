@@ -1,6 +1,4 @@
-'use client';
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -46,8 +44,12 @@ export function Header() {
 
         {/* Mobile Menu Button */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2 text-verde-700"
+          type="button"
+          onClick={() => {
+            console.log('Menu clicked, current state:', isOpen);
+            setIsOpen(!isOpen);
+          }}
+          className="md:hidden p-2 text-verde-700 cursor-pointer"
           aria-label="Toggle menu"
         >
           {isOpen ? <X size={24} /> : <Menu size={24} />}
