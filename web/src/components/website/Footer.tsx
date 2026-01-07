@@ -1,5 +1,6 @@
-import { Leaf, Mail, Phone, Linkedin } from 'lucide-react';
+import { Leaf, Mail, Phone, LinkedinIcon } from 'lucide-react';
 import { profile } from '@/lib/utils';
+import { Logo } from '@/components/ui/Logo';
 
 const navLinks = [
   { href: '/#inicio', label: 'Inicio' },
@@ -19,12 +20,8 @@ export function Footer() {
         <div className="grid md:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3 mb-4">
-              <Leaf className="h-6 w-6 text-rosa-300 dark:text-rosa-400" />
-              <span className="flex items-baseline gap-1.5">
-                <span className="logo-brand-name text-xl text-crema-100">Jessica</span>
-                <span className="logo-brand-surname text-xl text-verde-400">Méndez</span>
-              </span>
+            <div className="mb-4">
+              <Logo size="sm" variant="on-dark" />
             </div>
             <p className="text-verde-200 dark:text-verde-300 text-sm mb-2">
               {profile.title}
@@ -75,7 +72,7 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 text-verde-200 dark:text-verde-300 hover:text-white transition-colors text-sm"
               >
-                <Linkedin className="h-4 w-4 text-rosa-400 dark:text-rosa-500" />
+                <LinkedinIcon className="h-4 w-4 text-rosa-400 dark:text-rosa-500" />
                 LinkedIn
               </a>
             </div>
