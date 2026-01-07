@@ -419,3 +419,106 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ============================================
+   HERO BACKGROUND ANIMATIONS
+   Nature-inspired, CSS-only, performance-optimized
+   ============================================ */
+
+/* Animated gradient base */
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.hero-bg-animated {
+  background: linear-gradient(
+    -45deg,
+    var(--color-crema-50),
+    var(--color-verde-50),
+    var(--color-crema-100),
+    var(--color-rosa-50)
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 25s ease infinite;
+}
+
+.dark .hero-bg-animated {
+  background: linear-gradient(
+    -45deg,
+    #151a15,
+    #1c231c,
+    #181d18,
+    #1a1918
+  );
+  background-size: 400% 400%;
+}
+
+/* Organic morphing blobs */
+@keyframes morph-blob {
+  0%, 100% {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+  }
+  50% {
+    border-radius: 50% 60% 30% 60% / 30% 50% 70% 50%;
+    transform: rotate(180deg) scale(1.05);
+  }
+  75% {
+    border-radius: 60% 40% 60% 30% / 70% 30% 50% 60%;
+  }
+}
+
+.hero-blob {
+  position: absolute;
+  filter: blur(80px);
+  opacity: 0.35;
+  animation: morph-blob 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hero-blob-verde {
+  background: linear-gradient(135deg, var(--color-verde-200), var(--color-verde-300));
+  width: 500px;
+  height: 500px;
+  top: -150px;
+  right: -100px;
+}
+
+.hero-blob-rosa {
+  background: linear-gradient(135deg, var(--color-rosa-100), var(--color-rosa-200));
+  width: 400px;
+  height: 400px;
+  bottom: -100px;
+  left: -50px;
+  animation-delay: -7s;
+  animation-duration: 25s;
+}
+
+.dark .hero-blob-verde {
+  background: linear-gradient(135deg, var(--color-verde-800), var(--color-verde-900));
+  opacity: 0.25;
+}
+
+.dark .hero-blob-rosa {
+  background: linear-gradient(135deg, var(--color-rosa-900), var(--color-rosa-800));
+  opacity: 0.15;
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg-animated,
+  .hero-blob {
+    animation: none;
+  }
+}
