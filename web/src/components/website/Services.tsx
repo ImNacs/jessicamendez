@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
@@ -90,12 +90,20 @@ const cardVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
+    transition: { duration: 0.5, ease: 'easeOut' as const },
   },
 };
 
 export function Services() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   return (
     <section id="servicios" className="py-16 sm:py-20 bg-white dark:bg-[#151a15]">
@@ -127,16 +135,20 @@ export function Services() {
           {services.map((service) => {
             const Icon = service.icon;
             const isExpanded = expandedId === service.id;
+            // En desktop siempre mostrar detalles, en móvil usar expand
+            const showDetails = !isMobile || isExpanded;
 
             return (
               <motion.div key={service.id} variants={cardVariants}>
                 <Card
-                  className={`h-full transition-all duration-300 cursor-pointer ${
+                  className={`h-full transition-all duration-300 ${
+                    isMobile ? 'cursor-pointer' : ''
+                  } ${
                     service.highlight
                       ? 'border-verde-200 dark:border-verde-700 hover:border-verde-300 dark:hover:border-verde-600 hover:shadow-lg dark:hover:shadow-verde-900/30'
                       : 'border-gris-200 dark:border-gris-700 hover:border-gris-300 dark:hover:border-gris-600 hover:shadow-md dark:hover:shadow-verde-900/20'
                   } dark:bg-verde-900/20`}
-                  onClick={() => setExpandedId(isExpanded ? null : service.id)}
+                  onClick={() => isMobile && setExpandedId(isExpanded ? null : service.id)}
                 >
                   <CardContent className="p-5 sm:p-6">
                     {/* Header */}
@@ -148,14 +160,17 @@ export function Services() {
                           service.highlight ? 'text-verde-600 dark:text-verde-400' : 'text-gris-600 dark:text-gris-400'
                         }`} />
                       </div>
-                      <button
-                        className={`p-1 rounded-full transition-transform ${
-                          isExpanded ? 'rotate-180' : ''
-                        }`}
-                        aria-label={isExpanded ? 'Colapsar' : 'Expandir'}
-                      >
-                        <ChevronDown className="h-5 w-5 text-gris-400 dark:text-crema-400" />
-                      </button>
+                      {/* Chevron solo visible en móvil */}
+                      {isMobile && (
+                        <button
+                          className={`p-1 rounded-full transition-transform ${
+                            isExpanded ? 'rotate-180' : ''
+                          }`}
+                          aria-label={isExpanded ? 'Colapsar' : 'Expandir'}
+                        >
+                          <ChevronDown className="h-5 w-5 text-gris-400 dark:text-crema-400" />
+                        </button>
+                      )}
                     </div>
 
                     {/* Title & Description */}
@@ -168,13 +183,13 @@ export function Services() {
                       {service.description}
                     </p>
 
-                    {/* Progressive Disclosure - Details */}
+                    {/* Detalles - Siempre visibles en desktop, expandibles en móvil */}
                     <AnimatePresence>
-                      {isExpanded && (
+                      {showDetails && (
                         <motion.div
-                          initial={{ height: 0, opacity: 0 }}
+                          initial={isMobile ? { height: 0, opacity: 0 } : false}
                           animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
+                          exit={isMobile ? { height: 0, opacity: 0 } : undefined}
                           transition={{ duration: 0.3 }}
                           className="overflow-hidden"
                         >
