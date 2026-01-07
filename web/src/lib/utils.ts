@@ -15,7 +15,7 @@ export const profile = {
   email: "contacto@jessicamendez.bio",
   phone: "+52 55 6430 4586",
   website: "jessicamendez.bio",
-  linkedin: "https://linkedin.com/in/jessicamendezgomez",
+  linkedin: "https://www.linkedin.com/in/jessica-viridiana-m%C3%A9ndez-g%C3%B3mez-3b30371aa/",
   location: "Ciudad de México, México",
   specialties: ["ESG", "IFC", "Principios de Ecuador", "Regulación Ambiental"],
   sectors: ["Infraestructura", "Energía", "Construcción", "Oil & Gas"],

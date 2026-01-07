@@ -11,7 +11,7 @@ const regions = [
 
 export function Reach() {
   return (
-    <section className="py-20 bg-verde-700 text-white">
+    <section className="py-20 bg-verde-700 dark:bg-verde-800 text-white">
       <div className="container mx-auto px-4">
         {/* Header */}
         <motion.div
@@ -37,7 +37,7 @@ export function Reach() {
               transition={{ duration: 0.5, delay: index * 0.15 }}
               className="text-center"
             >
-              <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-white/10 dark:bg-verde-700/50 flex items-center justify-center">
                 <MapPin className="h-8 w-8" />
               </div>
               <h3 className="text-lg font-semibold">{region.name}</h3>
@@ -51,7 +51,7 @@ export function Reach() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="text-center text-verde-100 max-w-2xl mx-auto"
+          className="text-center text-verde-100 dark:text-verde-200 max-w-2xl mx-auto"
         >
           Cuento con alianzas estratégicas y experiencia liderando proyectos y equipos
           multidisciplinarios de especialistas en México, Centroamérica y República Dominicana.

@@ -31,7 +31,7 @@ const highlights = [
 
 export function About() {
   return (
-    <section id="acerca" className="py-16 sm:py-20 bg-verde-50/30">
+    <section id="acerca" className="py-16 sm:py-20 bg-verde-50/30 dark:bg-verde-950/30">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left - Image */}
@@ -44,7 +44,7 @@ export function About() {
           >
             <div className="relative max-w-md mx-auto lg:max-w-none">
               {/* Image */}
-              <div className="relative bg-white p-2 rounded-2xl shadow-lg">
+              <div className="relative bg-white dark:bg-verde-900/50 p-2 rounded-2xl shadow-lg dark:shadow-verde-900/30">
                 <img
                   src="/jessicamendez.png"
                   alt="Jessica Méndez - Bióloga y Consultora Ambiental"
@@ -54,7 +54,7 @@ export function About() {
               </div>
 
               {/* Experience badge */}
-              <div className="absolute -bottom-3 -right-3 sm:-bottom-4 sm:-right-4 bg-verde-600 text-white px-4 py-2 sm:px-5 sm:py-3 rounded-xl shadow-lg">
+              <div className="absolute -bottom-3 -right-3 sm:-bottom-4 sm:-right-4 bg-verde-600 dark:bg-verde-500 text-white dark:text-verde-950 px-4 py-2 sm:px-5 sm:py-3 rounded-xl shadow-lg">
                 <p className="text-xl sm:text-2xl font-bold">{profile.experience}</p>
                 <p className="text-xs opacity-90">de experiencia</p>
               </div>
@@ -69,12 +69,12 @@ export function About() {
             transition={{ duration: 0.6 }}
             className="order-1 lg:order-2"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-gris-900 mb-2">
+            <h2 className="text-2xl sm:text-3xl md:text-[2.25rem] text-gris-900 dark:text-crema-100 mb-2">
               {profile.name}
             </h2>
-            <p className="text-rosa-600 font-medium mb-4">{profile.title}</p>
+            <p className="text-rosa-600 dark:text-rosa-400 font-medium mb-4">{profile.title}</p>
 
-            <p className="text-base sm:text-lg text-gris-700 mb-6 leading-relaxed">
+            <p className="text-base sm:text-lg text-gris-700 dark:text-crema-300 mb-6 leading-relaxed">
               Consultora independiente especializada en la gestión ambiental y social
               de proyectos de infraestructura, energía y minería, con experiencia en
               México, Centroamérica y República Dominicana.
@@ -91,15 +91,15 @@ export function About() {
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                   className="flex items-start gap-2"
                 >
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-verde-500 mt-0.5 shrink-0" />
-                  <span className="text-sm sm:text-base text-gris-600">{item}</span>
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-verde-500 dark:text-verde-400 mt-0.5 shrink-0" />
+                  <span className="text-sm sm:text-base text-gris-600 dark:text-crema-300">{item}</span>
                 </motion.div>
               ))}
             </div>
 
             {/* Quote */}
-            <div className="p-4 bg-white border-l-4 border-verde-500 rounded-r-lg shadow-sm">
-              <p className="text-verde-800 italic font-serif text-sm sm:text-base">
+            <div className="p-4 bg-white dark:bg-verde-900/40 border-l-4 border-verde-500 dark:border-verde-400 rounded-r-lg shadow-sm">
+              <p className="text-verde-800 dark:text-verde-200 italic font-serif text-sm sm:text-base">
                 "Combino conocimiento normativo local con estándares internacionales
                 para crear valor sostenible en cada proyecto."
               </p>
@@ -120,13 +120,13 @@ export function About() {
             return (
               <div
                 key={index}
-                className="text-center p-4 sm:p-6 bg-white rounded-xl shadow-sm"
+                className="text-center p-4 sm:p-6 bg-white dark:bg-verde-900/30 rounded-xl shadow-sm dark:shadow-verde-900/20"
               >
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-verde-100 flex items-center justify-center">
-                  <Icon className="h-6 w-6 text-verde-600" />
+                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-verde-100 dark:bg-verde-800/50 flex items-center justify-center">
+                  <Icon className="h-6 w-6 text-verde-600 dark:text-verde-400" />
                 </div>
-                <h3 className="font-semibold text-gris-800 mb-1">{item.title}</h3>
-                <p className="text-sm text-gris-600">{item.description}</p>
+                <h3 className="text-base text-gris-800 dark:text-crema-100 mb-1">{item.title}</h3>
+                <p className="text-sm text-gris-600 dark:text-crema-300">{item.description}</p>
               </div>
             );
           })}
