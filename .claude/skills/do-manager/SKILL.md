@@ -49,6 +49,7 @@ Usa esta skill cuando el usuario necesite:
 | **Nginx** | 80, 443 | Reverse proxy + servidor estático |
 | **Docker** | - | Container runtime |
 | **NocoDB** | 8080 (interno) | Base de datos NoCode (Docker) |
+| **Umami** | 3001 (interno) | Analytics (Docker) |
 | **Certbot** | - | SSL/Let's Encrypt |
 
 ### Dominios y DNS (jessicamendez.bio)
@@ -58,10 +59,12 @@ Usa esta skill cuando el usuario necesite:
 | A | @ | 167.172.14.128 | Sitio principal |
 | A | admin | 167.172.14.128 | Panel admin (sin uso actual) |
 | A | hub | 167.172.14.128 | NocoDB |
+| A | data | 165.227.201.91 | Umami Analytics |
 
 **URLs activas**:
 - https://jessicamendez.bio → Sitio web (Nginx estático)
 - https://hub.jessicamendez.bio → NocoDB (Nginx proxy → Docker)
+- https://data.jessicamendez.bio → Umami Analytics (Nginx proxy → Docker)
 
 ### SSH Keys
 
@@ -74,8 +77,9 @@ Usa esta skill cuando el usuario necesite:
 
 | Servicio | Uso | Conexión |
 |----------|-----|----------|
-| **Neon PostgreSQL** | DB para NocoDB | `ep-bitter-grass-ahzvhhrs-pooler.c-3.us-east-1.aws.neon.tech` |
+| **Neon PostgreSQL** | DB para NocoDB y Umami | `ep-bitter-grass-ahzvhhrs-pooler.c-3.us-east-1.aws.neon.tech` |
 | **GitHub Actions** | CI/CD | Deploys automáticos a `/root/jessicamendez/web/dist` |
+| **Resend** | Emails transaccionales | API Key en `.env.local` |
 
 ---
 

@@ -75,6 +75,10 @@ git push origin main        # Trigger deploy a producción
 **Triggers**: enviar email, email de bienvenida, confirmación, newsletter, notificación, correo, email transaccional
 **Ubicación**: `.claude/skills/email-sender/` | Resend + React Email
 
+#### `analytics-reporter`
+**Triggers**: analytics, métricas, visitas, tráfico, reportes, fuentes, campañas UTM, eventos, posts populares
+**Ubicación**: `.claude/skills/analytics-reporter/` | Umami Analytics API
+
 #### `claude-md-maintainer`
 **Triggers**: optimizar CLAUDE.md, revisar CLAUDE.md, analizar CLAUDE.md
 **Ubicación**: `.claude/skills/claude-md-maintainer/`
@@ -120,9 +124,11 @@ Verifica documentación, crea commits estructurados y pushea cambios.
 - IP: 165.227.201.91 / 167.172.14.128
 - Stack: Ubuntu 24.04 + Nginx + Docker
 - NocoDB en https://hub.jessicamendez.bio
+- Umami en https://data.jessicamendez.bio
 
 Para gestionar infraestructura, usar skill `do-manager`.
 Para gestionar NocoDB (bases, tablas, registros), usar skill `nocodb-manager`.
+Para consultar analytics (visitas, fuentes, eventos), usar skill `analytics-reporter`.
 
 ## Referencias
 
