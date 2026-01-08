@@ -46,7 +46,10 @@ Usa esta skill cuando el usuario necesite:
 
 | Servicio | Puerto | Descripción |
 |----------|--------|-------------|
-| **Nginx** | 80, 443 | Reverse proxy + servidor estático |
+| **Nginx** | 80, 443 | Reverse proxy (SSL termination) |
+| **Node.js 22** | - | Runtime para Astro SSR |
+| **PM2** | - | Process manager para Node.js |
+| **Astro SSR** | 4321 (interno) | Sitio web (hybrid mode) |
 | **Docker** | - | Container runtime |
 | **NocoDB** | 8080 (interno) | Base de datos NoCode (Docker) |
 | **Umami** | 3001 (interno) | Analytics (Docker) |
@@ -62,9 +65,9 @@ Usa esta skill cuando el usuario necesite:
 | A | data | 165.227.201.91 | Umami Analytics |
 
 **URLs activas**:
-- https://jessicamendez.bio → Sitio web (Nginx estático)
-- https://hub.jessicamendez.bio → NocoDB (Nginx proxy → Docker)
-- https://data.jessicamendez.bio → Umami Analytics (Nginx proxy → Docker)
+- https://jessicamendez.bio → Sitio web (Nginx → PM2/Node.js:4321)
+- https://hub.jessicamendez.bio → NocoDB (Nginx → Docker:8080)
+- https://data.jessicamendez.bio → Umami Analytics (Nginx → Docker:3001)
 
 ### SSH Keys
 
@@ -73,13 +76,30 @@ Usa esta skill cuando el usuario necesite:
 | 53118039 | nacs-local | Key principal |
 | 42753913 | Nacs | Key secundaria |
 
+### Configuración del Sitio Web (PM2)
+
+| Archivo | Ruta | Descripción |
+|---------|------|-------------|
+| **Build** | `/root/jessicamendez/web/dist/` | Archivos de producción |
+| **Entry** | `/root/jessicamendez/web/dist/server/entry.mjs` | Punto de entrada Node.js |
+| **Env vars** | `/root/jessicamendez/.env` | Variables de entorno |
+| **PM2 dump** | `/root/.pm2/dump.pm2` | Estado guardado de PM2 |
+
+**Variables en `/root/jessicamendez/.env`**:
+```bash
+RESEND_API_KEY=re_xxx
+RESEND_AUDIENCE_ID=xxx-xxx
+HOST=0.0.0.0
+PORT=4321
+```
+
 ### Servicios Externos
 
 | Servicio | Uso | Conexión |
 |----------|-----|----------|
 | **Neon PostgreSQL** | DB para NocoDB y Umami | `ep-bitter-grass-ahzvhhrs-pooler.c-3.us-east-1.aws.neon.tech` |
 | **GitHub Actions** | CI/CD | Deploys automáticos a `/root/jessicamendez/web/dist` |
-| **Resend** | Emails transaccionales | API Key en `.env.local` |
+| **Resend** | Emails transaccionales | API Key en droplet `.env` y local `.env.local` |
 
 ---
 
@@ -124,13 +144,28 @@ doctl compute ssh jessica-mendez --access-token $TOKEN
 ### Gestionar Servicios en el Droplet
 
 ```bash
+# === PM2 (Sitio web) ===
+# Estado de PM2
+ssh root@165.227.201.91 'export PATH="$HOME/.bun/bin:$PATH" && pm2 status'
+
+# Logs del sitio
+ssh root@165.227.201.91 'export PATH="$HOME/.bun/bin:$PATH" && pm2 logs jessicamendez --lines 50'
+
+# Reiniciar sitio
+ssh root@165.227.201.91 'export PATH="$HOME/.bun/bin:$PATH" && pm2 restart jessicamendez'
+
+# Reload sin downtime
+ssh root@165.227.201.91 'export PATH="$HOME/.bun/bin:$PATH" && pm2 reload jessicamendez'
+
+# === Nginx ===
 # Estado de Nginx
 ssh root@165.227.201.91 "systemctl status nginx"
 
 # Reiniciar Nginx
 ssh root@165.227.201.91 "systemctl restart nginx"
 
-# Ver contenedor NocoDB
+# === Docker (NocoDB, Umami) ===
+# Ver contenedores
 ssh root@165.227.201.91 "docker ps"
 
 # Logs de NocoDB
@@ -139,8 +174,12 @@ ssh root@165.227.201.91 "docker logs nocodb --tail 50"
 # Reiniciar NocoDB
 ssh root@165.227.201.91 "docker restart nocodb"
 
+# === Sistema ===
 # Uso de memoria
 ssh root@165.227.201.91 "free -h"
+
+# Verificar puerto del sitio
+ssh root@165.227.201.91 "ss -tlnp | grep 4321"
 ```
 
 ### Crear Registro DNS
@@ -301,7 +340,15 @@ doctl compute ssh-key import <nombre> \
 ### Error: Sitio web no actualiza
 1. Verificar GitHub Actions: `gh run list --repo ImNacs/jessicamendez --limit 3`
 2. Verificar archivos: `ssh root@165.227.201.91 "ls -la /root/jessicamendez/web/dist"`
-3. Recargar Nginx: `ssh root@165.227.201.91 "nginx -t && systemctl reload nginx"`
+3. Verificar PM2: `ssh root@165.227.201.91 'export PATH="$HOME/.bun/bin:$PATH" && pm2 status'`
+4. Ver logs PM2: `ssh root@165.227.201.91 'export PATH="$HOME/.bun/bin:$PATH" && pm2 logs jessicamendez --lines 20'`
+5. Reiniciar PM2: `ssh root@165.227.201.91 'export PATH="$HOME/.bun/bin:$PATH" && pm2 restart jessicamendez'`
+
+### Error: 502 Bad Gateway
+1. Verificar que Node escucha en puerto 4321: `ssh root@165.227.201.91 "ss -tlnp | grep 4321"`
+2. Si no hay proceso, verificar PM2 status
+3. Verificar que escucha en 0.0.0.0 (no solo IPv6): debe mostrar `0.0.0.0:4321`
+4. Verificar env vars: `ssh root@165.227.201.91 "cat /root/jessicamendez/.env"` (debe tener HOST=0.0.0.0)
 
 ---
 
