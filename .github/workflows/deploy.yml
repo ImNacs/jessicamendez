@@ -46,6 +46,9 @@ jobs:
           username: ${{ env.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            # Setup PATH for bun-installed packages
+            export PATH="$HOME/.bun/bin:$PATH"
+
             cd ${{ env.DEPLOY_PATH }}
 
             # Atomic swap
