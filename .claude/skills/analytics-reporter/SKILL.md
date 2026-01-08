@@ -19,22 +19,27 @@ Skill para consultar métricas y generar reportes desde Umami Analytics via API.
 
 ## Configuración
 
-| Campo | Valor |
-|-------|-------|
-| **URL** | `https://data.jessicamendez.bio` |
-| **Website ID** | `b7135bbc-1556-405c-97f7-2f50efc87437` |
-| **Credenciales** | Usuario: `admin` (cambiar contraseña en primer login) |
-| **API Token** | Obtener via `/api/auth/login` |
+Variables en `.env.local`:
+
+```bash
+UMAMI_URL=https://data.jessicamendez.bio
+UMAMI_USERNAME=admin
+UMAMI_PASSWORD=<tu_password>
+UMAMI_WEBSITE_ID=b7135bbc-1556-405c-97f7-2f50efc87437
+```
 
 ## Autenticación
 
-Antes de consultar, obtener token JWT:
+Antes de consultar, cargar variables y obtener token JWT:
 
 ```bash
-# Obtener token (guardar para usar en queries)
-TOKEN=$(curl -s -X POST "https://data.jessicamendez.bio/api/auth/login" \
+# Cargar variables de entorno
+export $(grep -E '^UMAMI' .env.local | xargs)
+
+# Obtener token
+TOKEN=$(curl -s -X POST "$UMAMI_URL/api/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"TU_PASSWORD"}' | jq -r '.token')
+  -d "{\"username\":\"$UMAMI_USERNAME\",\"password\":\"$UMAMI_PASSWORD\"}" | jq -r '.token')
 
 echo "Token: ${TOKEN:0:30}..."
 ```
@@ -46,9 +51,9 @@ echo "Token: ${TOKEN:0:30}..."
 ```bash
 START=$(($(date -d "30 days ago" +%s) * 1000))
 END=$(($(date +%s) * 1000))
-SITE="b7135bbc-1556-405c-97f7-2f50efc87437"
+SITE="$UMAMI_WEBSITE_ID"
 
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/stats?startAt=$START&endAt=$END" \
+curl -s "$UMAMI_URL/api/websites/$SITE/stats?startAt=$START&endAt=$END" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
@@ -57,35 +62,35 @@ curl -s "https://data.jessicamendez.bio/api/websites/$SITE/stats?startAt=$START&
 ### Páginas/Posts Más Visitados
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=url&limit=10" \
+curl -s "$UMAMI_URL/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=url&limit=10" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Fuentes de Tráfico (Referrers)
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=referrer&limit=10" \
+curl -s "$UMAMI_URL/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=referrer&limit=10" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Por País
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=country" \
+curl -s "$UMAMI_URL/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=country" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Por Dispositivo
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=device" \
+curl -s "$UMAMI_URL/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=device" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Por Navegador
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=browser" \
+curl -s "$UMAMI_URL/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=browser" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
@@ -93,35 +98,35 @@ curl -s "https://data.jessicamendez.bio/api/websites/$SITE/metrics?startAt=$STAR
 
 ```bash
 # Parámetros de query (incluye UTM)
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=query" \
+curl -s "$UMAMI_URL/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=query" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Eventos Personalizados
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=event" \
+curl -s "$UMAMI_URL/api/websites/$SITE/metrics?startAt=$START&endAt=$END&type=event" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Pageviews por Día (gráfica)
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/pageviews?startAt=$START&endAt=$END&unit=day&timezone=America/Mexico_City" \
+curl -s "$UMAMI_URL/api/websites/$SITE/pageviews?startAt=$START&endAt=$END&unit=day&timezone=America/Mexico_City" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Usuarios Activos (tiempo real)
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/websites/$SITE/active" \
+curl -s "$UMAMI_URL/api/websites/$SITE/active" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Datos en Tiempo Real
 
 ```bash
-curl -s "https://data.jessicamendez.bio/api/realtime/$SITE" \
+curl -s "$UMAMI_URL/api/realtime/$SITE" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
@@ -214,31 +219,31 @@ URLs cortas que redirigen a un destino, con tracking de clicks.
 
 ```bash
 # Listar todos los links
-curl -s "https://data.jessicamendez.bio/api/links" \
+curl -s "$UMAMI_URL/api/links" \
   -H "Authorization: Bearer $TOKEN" | jq
 
 # Obtener un link específico
-curl -s "https://data.jessicamendez.bio/api/links/{linkId}" \
+curl -s "$UMAMI_URL/api/links/{linkId}" \
   -H "Authorization: Bearer $TOKEN" | jq
 
 # Actualizar link
-curl -s -X POST "https://data.jessicamendez.bio/api/links/{linkId}" \
+curl -s -X POST "$UMAMI_URL/api/links/{linkId}" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name":"Nuevo nombre","url":"https://destino.com","slug":"mi-enlace"}' | jq
 
 # Eliminar link
-curl -s -X DELETE "https://data.jessicamendez.bio/api/links/{linkId}" \
+curl -s -X DELETE "$UMAMI_URL/api/links/{linkId}" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
 ### Usar Link Trackeado
 
 ```
-https://data.jessicamendez.bio/l/{slug}
+$UMAMI_URL/l/{slug}
 ```
 
-Ejemplo: `https://data.jessicamendez.bio/l/curso-esg`
+Ejemplo: `$UMAMI_URL/l/curso-esg`
 
 ## Pixels (Tracking sin JavaScript)
 
@@ -259,21 +264,21 @@ Imágenes invisibles para trackear donde no se puede usar JavaScript.
 
 ```bash
 # Listar todos los pixels
-curl -s "https://data.jessicamendez.bio/api/pixels" \
+curl -s "$UMAMI_URL/api/pixels" \
   -H "Authorization: Bearer $TOKEN" | jq
 
 # Obtener un pixel específico
-curl -s "https://data.jessicamendez.bio/api/pixels/{pixelId}" \
+curl -s "$UMAMI_URL/api/pixels/{pixelId}" \
   -H "Authorization: Bearer $TOKEN" | jq
 
 # Actualizar pixel
-curl -s -X POST "https://data.jessicamendez.bio/api/pixels/{pixelId}" \
+curl -s -X POST "$UMAMI_URL/api/pixels/{pixelId}" \
   -H "Authorization: Bearer $TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"name":"Newsletter Enero","slug":"news-enero"}' | jq
 
 # Eliminar pixel
-curl -s -X DELETE "https://data.jessicamendez.bio/api/pixels/{pixelId}" \
+curl -s -X DELETE "$UMAMI_URL/api/pixels/{pixelId}" \
   -H "Authorization: Bearer $TOKEN" | jq
 ```
 
@@ -281,7 +286,7 @@ curl -s -X DELETE "https://data.jessicamendez.bio/api/pixels/{pixelId}" \
 
 ```html
 <!-- En el HTML del email -->
-<img src="https://data.jessicamendez.bio/p/{slug}"
+<img src="$UMAMI_URL/p/{slug}"
      width="1" height="1"
      style="display:none"
      alt="">
@@ -290,7 +295,7 @@ curl -s -X DELETE "https://data.jessicamendez.bio/api/pixels/{pixelId}" \
 ### Embeber en Sitio Externo
 
 ```html
-<img src="https://data.jessicamendez.bio/p/{slug}" width="1" height="1" alt="">
+<img src="$UMAMI_URL/p/{slug}" width="1" height="1" alt="">
 ```
 
 ## Manejo de Errores
@@ -298,16 +303,17 @@ curl -s -X DELETE "https://data.jessicamendez.bio/api/pixels/{pixelId}" \
 ### Error: "401 Unauthorized"
 Token expirado o inválido. Obtener nuevo token:
 ```bash
-TOKEN=$(curl -s -X POST "https://data.jessicamendez.bio/api/auth/login" \
+export $(grep -E '^UMAMI' .env.local | xargs)
+TOKEN=$(curl -s -X POST "$UMAMI_URL/api/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"TU_PASSWORD"}' | jq -r '.token')
+  -d "{\"username\":\"$UMAMI_USERNAME\",\"password\":\"$UMAMI_PASSWORD\"}" | jq -r '.token')
 ```
 
 ### Error: "400 Bad Request"
 Verificar que `startAt` y `endAt` están en milisegundos (no segundos).
 
 ### Error: "404 Not Found"
-Verificar el Website ID: `b7135bbc-1556-405c-97f7-2f50efc87437`
+Verificar el Website ID en `.env.local`: `UMAMI_WEBSITE_ID`
 
 ### Sin datos
 - Verificar que el tracking code está instalado en el sitio
