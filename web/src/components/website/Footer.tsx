@@ -31,13 +31,15 @@ export function Footer() {
               Tu aliada en regulación ambiental y estrategias de sostenibilidad.
               Transformando desafíos ambientales en oportunidades de desarrollo sostenible.
             </p>
-            {/* Newsletter */}
-            <div className="max-w-sm">
-              <p className="text-verde-200 dark:text-verde-300 text-sm mb-3">
-                Suscríbete al newsletter
-              </p>
-              <NewsletterForm variant="inline" />
-            </div>
+            {/* Newsletter - TODO: Habilitar cuando se configure dominio en Resend */}
+            {!import.meta.env.PROD && (
+              <div className="max-w-sm">
+                <p className="text-verde-200 dark:text-verde-300 text-sm mb-3">
+                  Suscríbete al newsletter
+                </p>
+                <NewsletterForm variant="inline" />
+              </div>
+            )}
           </div>
 
           {/* Navigation */}
