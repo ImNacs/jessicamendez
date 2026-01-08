@@ -111,6 +111,8 @@ curl -s -H "xc-token: $NOCODB_API_TOKEN" \
 
 ### Crear Tabla
 
+**IMPORTANTE**: Siempre incluir una columna `Id` como clave primaria (PK) con auto-increment.
+
 ```bash
 export $(grep -E '^NOCODB' .env.local | xargs)
 curl -s -X POST \
@@ -121,12 +123,18 @@ curl -s -X POST \
     "table_name": "proyectos",
     "title": "Proyectos",
     "columns": [
+      {"column_name": "id", "title": "Id", "uidt": "ID", "pk": true, "ai": true},
       {"column_name": "titulo", "title": "Titulo", "uidt": "SingleLineText"},
       {"column_name": "descripcion", "title": "Descripcion", "uidt": "LongText"},
       {"column_name": "estado", "title": "Estado", "uidt": "SingleSelect", "dtxp": "activo,completado,pausado"}
     ]
   }' | jq
 ```
+
+> **Regla crítica**: Las tablas sin PK causan errores en operaciones CRUD. SIEMPRE agregar:
+> ```json
+> {"column_name": "id", "title": "Id", "uidt": "ID", "pk": true, "ai": true}
+> ```
 
 ### Obtener Tabla
 
@@ -172,6 +180,7 @@ curl -s -X POST \
 
 | uidt | Descripción |
 |------|-------------|
+| `ID` | Clave primaria auto-increment (usar con `pk: true, ai: true`) |
 | `SingleLineText` | Texto corto |
 | `LongText` | Texto largo |
 | `Number` | Número |
