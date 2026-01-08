@@ -1,0 +1,418 @@
+---
+// Página temporal de mockups - eliminar después de decidir
+---
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mockups - Sección About</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, sans-serif;
+      background: #f5f5f5;
+      padding: 2rem;
+      color: #333;
+    }
+    h1 { text-align: center; margin-bottom: 2rem; color: #2d5a47; }
+    h2 { margin: 2rem 0 1rem; color: #2d5a47; border-bottom: 2px solid #2d5a47; padding-bottom: 0.5rem; }
+    h3 { margin: 1rem 0 0.5rem; color: #666; font-size: 0.9rem; }
+    .section { margin-bottom: 3rem; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .card-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #2d5a47;
+      font-size: 1.1rem;
+    }
+    .card-desc {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 1rem;
+    }
+    .img-container { position: relative; }
+    img { display: block; width: 100%; }
+
+    /* Variables de colores */
+    :root {
+      --verde-50: #f0f7f4;
+      --verde-100: #d1e7dd;
+      --verde-500: #3d8b6e;
+      --verde-600: #2d5a47;
+      --rosa-400: #e8a4b8;
+      --rosa-500: #d4849a;
+      --crema-100: #faf8f5;
+    }
+
+    /* Estilos de marcos */
+
+    /* 1. Marco Polaroid */
+    .frame-polaroid {
+      background: white;
+      padding: 0.75rem;
+      padding-bottom: 2.5rem;
+      border-radius: 4px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+    .frame-polaroid img { border-radius: 2px; }
+
+    /* 2. Marco Borde Doble */
+    .frame-double-border {
+      background: white;
+      padding: 0.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      outline: 4px solid var(--verde-100);
+      outline-offset: 4px;
+    }
+    .frame-double-border img { border-radius: 8px; }
+
+    /* 3. Marco Gradiente */
+    .frame-gradient {
+      background: linear-gradient(135deg, var(--verde-500), var(--rosa-400));
+      padding: 4px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(61, 139, 110, 0.3);
+    }
+    .frame-gradient img { border-radius: 12px; }
+
+    /* 4. Marco Sombra Profunda */
+    .frame-deep-shadow {
+      background: white;
+      padding: 0.5rem;
+      border-radius: 16px;
+      box-shadow:
+        0 4px 6px rgba(0,0,0,0.07),
+        0 10px 20px rgba(0,0,0,0.1),
+        0 20px 40px rgba(45, 90, 71, 0.15);
+      border: 1px solid var(--verde-100);
+    }
+    .frame-deep-shadow img { border-radius: 12px; }
+
+    /* 5. Marco Esquinas Decorativas */
+    .frame-corners {
+      position: relative;
+      background: white;
+      padding: 1rem;
+      border-radius: 8px;
+    }
+    .frame-corners::before,
+    .frame-corners::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border: 3px solid var(--verde-500);
+    }
+    .frame-corners::before {
+      top: -6px;
+      left: -6px;
+      border-right: none;
+      border-bottom: none;
+    }
+    .frame-corners::after {
+      bottom: -6px;
+      right: -6px;
+      border-left: none;
+      border-top: none;
+    }
+    .frame-corners img { border-radius: 4px; }
+
+    /* 6. Marco Vintage */
+    .frame-vintage {
+      background: linear-gradient(145deg, #f8f4e8, #e8e0d0);
+      padding: 0.75rem;
+      border-radius: 4px;
+      box-shadow:
+        inset 0 0 10px rgba(0,0,0,0.1),
+        0 4px 15px rgba(0,0,0,0.2);
+      border: 1px solid #d4c8b8;
+    }
+    .frame-vintage img {
+      border-radius: 2px;
+      filter: contrast(1.05) saturate(0.95);
+    }
+
+    /* 7. Marco Minimalista */
+    .frame-minimal {
+      border: 2px solid var(--verde-500);
+      padding: 0.5rem;
+      border-radius: 0;
+    }
+    .frame-minimal img { border-radius: 0; }
+
+    /* 8. Marco Orgánico */
+    .frame-organic {
+      background: white;
+      padding: 0.5rem;
+      border-radius: 60% 40% 50% 50% / 50% 50% 40% 60%;
+      box-shadow: 0 8px 30px rgba(61, 139, 110, 0.2);
+      overflow: hidden;
+    }
+    .frame-organic img {
+      border-radius: 55% 35% 45% 45% / 45% 45% 35% 55%;
+    }
+
+    /* Estilos de aspect ratio */
+    .ratio-original img { /* sin restricción */ }
+    .ratio-4-5 img { aspect-ratio: 4/5; object-fit: cover; }
+    .ratio-3-4 img { aspect-ratio: 3/4; object-fit: cover; }
+    .ratio-1-1 img { aspect-ratio: 1/1; object-fit: cover; }
+    .ratio-max-h img { max-height: 400px; object-fit: cover; }
+
+    .comparison {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .comparison > div {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .badge {
+      position: absolute;
+      bottom: -12px;
+      right: -12px;
+      background: var(--verde-600);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .recommended {
+      border: 3px solid var(--verde-500);
+      position: relative;
+    }
+    .recommended::after {
+      content: 'RECOMENDADO';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--verde-500);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mockups - Sección "Acerca de mí"</h1>
+
+  <!-- SECCIÓN: Comparación de altura -->
+  <section class="section">
+    <h2>1. Opciones para reducir altura</h2>
+    <p style="margin-bottom: 1.5rem; color: #666;">Compara cómo diferentes aspect ratios afectan la altura de la imagen.</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">Original (sin restricción)</div>
+        <div class="img-container ratio-original">
+          <div class="frame-gradient">
+            <img src="/jessicamendez.webp" alt="Original" />
+          </div>
+        </div>
+        <p class="card-desc">Altura completa de la imagen original.</p>
+      </div>
+
+      <div class="card recommended">
+        <div class="card-title">Aspect Ratio 4:5</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-gradient">
+            <img src="/jessicamendez.webp" alt="4:5" />
+          </div>
+        </div>
+        <p class="card-desc">Proporción profesional, reduce altura manteniendo el rostro centrado.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Aspect Ratio 3:4</div>
+        <div class="img-container ratio-3-4">
+          <div class="frame-gradient">
+            <img src="/jessicamendez.webp" alt="3:4" />
+          </div>
+        </div>
+        <p class="card-desc">Más cuadrado, reduce más la altura.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Aspect Ratio 1:1</div>
+        <div class="img-container ratio-1-1">
+          <div class="frame-gradient">
+            <img src="/jessicamendez.webp" alt="1:1" />
+          </div>
+        </div>
+        <p class="card-desc">Cuadrado, máxima reducción de altura.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Max-height: 400px</div>
+        <div class="img-container ratio-max-h">
+          <div class="frame-gradient">
+            <img src="/jessicamendez.webp" alt="max-h" />
+          </div>
+        </div>
+        <p class="card-desc">Altura fija máxima, ancho se ajusta proporcionalmente.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: Estilos de marco -->
+  <section class="section">
+    <h2>2. Estilos de Marco</h2>
+    <p style="margin-bottom: 1.5rem; color: #666;">Todos los ejemplos usan aspect-ratio 4:5 para comparar solo el marco.</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">Actual (Simple)</div>
+        <div class="img-container ratio-4-5">
+          <div style="background: white; padding: 0.5rem; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+            <img src="/jessicamendez.webp" alt="Actual" style="border-radius: 12px;" />
+          </div>
+        </div>
+        <p class="card-desc">Marco actual del sitio.</p>
+      </div>
+
+      <div class="card recommended">
+        <div class="card-title">Marco Gradiente</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-gradient">
+            <img src="/jessicamendez.webp" alt="Gradiente" />
+          </div>
+        </div>
+        <p class="card-desc">Gradiente verde→rosa con tus colores de marca. Moderno y distintivo.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Marco Polaroid</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-polaroid">
+            <img src="/jessicamendez.webp" alt="Polaroid" />
+          </div>
+        </div>
+        <p class="card-desc">Estilo foto instantánea. Personal y nostálgico.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Borde Doble</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-double-border">
+            <img src="/jessicamendez.webp" alt="Doble borde" />
+          </div>
+        </div>
+        <p class="card-desc">Doble capa de borde. Elegante y clásico.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sombra Profunda</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-deep-shadow">
+            <img src="/jessicamendez.webp" alt="Sombra" />
+          </div>
+        </div>
+        <p class="card-desc">Múltiples capas de sombra. Efecto flotante.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Esquinas Decorativas</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-corners">
+            <img src="/jessicamendez.webp" alt="Esquinas" />
+          </div>
+        </div>
+        <p class="card-desc">Esquinas con líneas. Artístico y minimalista.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Marco Vintage</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-vintage">
+            <img src="/jessicamendez.webp" alt="Vintage" />
+          </div>
+        </div>
+        <p class="card-desc">Textura papel envejecido. Cálido y atemporal.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Minimalista</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-minimal">
+            <img src="/jessicamendez.webp" alt="Minimal" />
+          </div>
+        </div>
+        <p class="card-desc">Borde fino sin redondeo. Ultra limpio.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Orgánico</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-organic">
+            <img src="/jessicamendez.webp" alt="Orgánico" />
+          </div>
+        </div>
+        <p class="card-desc">Forma irregular orgánica. Único y natural.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECCIÓN: Combinación completa -->
+  <section class="section">
+    <h2>3. Vista previa completa (con badge)</h2>
+    <p style="margin-bottom: 1.5rem; color: #666;">Cómo se vería con el badge de experiencia.</p>
+
+    <div class="grid">
+      <div class="card">
+        <div class="card-title">Gradiente + Badge</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-gradient">
+            <img src="/jessicamendez.webp" alt="Con badge" />
+          </div>
+          <div class="badge">+15 años</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Polaroid + Badge</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-polaroid">
+            <img src="/jessicamendez.webp" alt="Con badge" />
+          </div>
+          <div class="badge">+15 años</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Sombra Profunda + Badge</div>
+        <div class="img-container ratio-4-5">
+          <div class="frame-deep-shadow">
+            <img src="/jessicamendez.webp" alt="Con badge" />
+          </div>
+          <div class="badge">+15 años</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer style="text-align: center; margin-top: 3rem; padding: 2rem; color: #666; font-size: 0.9rem;">
+    <p>Página temporal de mockups - Eliminar después de decidir</p>
+    <p style="margin-top: 0.5rem;"><code>/mockups-about</code></p>
+  </footer>
+</body>
+</html>
