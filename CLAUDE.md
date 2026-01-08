@@ -63,6 +63,10 @@ git push origin main        # Trigger deploy a producción
 **Triggers**: droplet, DigitalOcean, DO, servidor, VPS, SSH, DNS
 **Ubicación**: `.claude/skills/do-manager/` | Incluye info de infraestructura actual
 
+#### `nocodb-manager`
+**Triggers**: NocoDB, hub, base de datos, crear tabla, insertar registros, API NocoDB
+**Ubicación**: `.claude/skills/nocodb-manager/`
+
 #### `claude-md-maintainer`
 **Triggers**: optimizar CLAUDE.md, revisar CLAUDE.md, analizar CLAUDE.md
 **Ubicación**: `.claude/skills/claude-md-maintainer/`
@@ -110,6 +114,7 @@ Verifica documentación, crea commits estructurados y pushea cambios.
 - NocoDB en https://hub.jessicamendez.bio
 
 Para gestionar infraestructura, usar skill `do-manager`.
+Para gestionar NocoDB (bases, tablas, registros), usar skill `nocodb-manager`.
 
 ## Referencias
 
