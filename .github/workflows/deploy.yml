@@ -29,6 +29,20 @@ jobs:
         working-directory: ./web
         run: bun run build
 
+      - name: Install server runtime dependencies
+        working-directory: ./web/dist/server
+        run: |
+          cat > package.json << 'EOF'
+          {
+            "type": "module",
+            "dependencies": {
+              "server-destroy": "^1.0.1",
+              "send": "^1.1.0"
+            }
+          }
+          EOF
+          bun install --production
+
       - name: Deploy to droplet
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -51,7 +65,7 @@ jobs:
 
             cd ${{ env.DEPLOY_PATH }}
 
-            # Atomic swap
+            # Atomic swap (zero downtime)
             rm -rf dist-old
             [ -d dist ] && mv dist dist-old
             mv dist-new dist
