@@ -200,6 +200,10 @@ curl -s -X POST \
 
 ## Operaciones de Registros (Data API)
 
+> **column_name vs title**: Al escribir/actualizar datos usa `column_name` (ej: `title`, `pubDate`).
+> Al leer, la API retorna los datos con `title` de la columna (ej: `Título`, `Fecha`).
+> Siempre usa `column_name` en los payloads de POST/PATCH.
+
 ### Listar Registros
 
 ```bash
@@ -250,24 +254,40 @@ curl -s -X POST \
   ]' | jq
 ```
 
-### Actualizar Registro
+### Actualizar Registro(s)
+
+> **IMPORTANTE**: Usar `id` minúscula en el payload, no `Id`.
 
 ```bash
 export $(grep -E '^NOCODB' .env.local | xargs)
+# Actualizar uno o varios registros (siempre array)
 curl -s -X PATCH \
   -H "xc-token: $NOCODB_API_TOKEN" \
   -H "Content-Type: application/json" \
-  "$NOCODB_URL/api/v2/tables/{tableId}/records/{recordId}" \
-  -d '{"estado": "completado"}' | jq
+  "$NOCODB_URL/api/v2/tables/{tableId}/records" \
+  -d '[{"id": 1, "estado": "completado"}]' | jq
+
+# Actualizar múltiples registros
+curl -s -X PATCH \
+  -H "xc-token: $NOCODB_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  "$NOCODB_URL/api/v2/tables/{tableId}/records" \
+  -d '[
+    {"id": 1, "estado": "completado"},
+    {"id": 2, "estado": "pausado"}
+  ]' | jq
 ```
 
-### Eliminar Registro
+### Eliminar Registro(s)
 
 ```bash
 export $(grep -E '^NOCODB' .env.local | xargs)
+# Eliminar uno o varios registros (siempre array con id minúscula)
 curl -s -X DELETE \
   -H "xc-token: $NOCODB_API_TOKEN" \
-  "$NOCODB_URL/api/v2/tables/{tableId}/records/{recordId}"
+  -H "Content-Type: application/json" \
+  "$NOCODB_URL/api/v2/tables/{tableId}/records" \
+  -d '[{"id": 1}, {"id": 2}]' | jq
 ```
 
 ---
