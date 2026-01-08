@@ -14,7 +14,10 @@ import { calculateReadingTime, categoryConfig } from '@/lib/blog';
 import { profile } from '@/lib/utils';
 
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  // Show drafts in development, hide in production
+  const posts = await getCollection('blog', ({ data }) =>
+    import.meta.env.DEV ? true : !data.draft
+  );
   return posts.map((post) => ({
     params: { id: post.id },
     props: { post },

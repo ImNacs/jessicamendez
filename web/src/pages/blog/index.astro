@@ -13,9 +13,10 @@ import JsonLd from '@/components/seo/JsonLd.astro';
 const POSTS_PER_PAGE = 9;
 const currentPage = Number(Astro.url.searchParams.get('page')) || 1;
 
-// Get all published posts, sorted by date
-const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+// Get posts - show drafts in dev, hide in production
+const allPosts = (await getCollection('blog', ({ data }) =>
+  import.meta.env.DEV ? true : !data.draft
+)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 const posts = allPosts.slice(

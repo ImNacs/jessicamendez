@@ -1,9 +1,12 @@
 ---
 import { getCollection } from 'astro:content';
 
-// Check if there are any published blog posts
-const publishedPosts = await getCollection('blog', ({ data }) => !data.draft);
-const hasBlogPosts = publishedPosts.length > 0;
+// Check if there are any blog posts to show
+// In dev: show Blog link if there are any posts (including drafts)
+// In prod: show Blog link only if there are published posts
+const allPosts = await getCollection('blog');
+const publishedPosts = allPosts.filter(({ data }) => !data.draft);
+const hasBlogPosts = import.meta.env.DEV ? allPosts.length > 0 : publishedPosts.length > 0;
 
 const navLinks = [
   { href: '/#inicio', label: 'Inicio' },

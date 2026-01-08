@@ -24,9 +24,10 @@ const config = categoryConfig[category];
 const POSTS_PER_PAGE = 9;
 const currentPage = Number(Astro.url.searchParams.get('page')) || 1;
 
-// Get posts for this category
-const allPosts = (await getCollection('blog', ({ data }) => !data.draft && data.category === category))
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+// Get posts for this category - show drafts in dev
+const allPosts = (await getCollection('blog', ({ data }) =>
+  (import.meta.env.DEV ? true : !data.draft) && data.category === category
+)).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
 const totalPages = Math.ceil(allPosts.length / POSTS_PER_PAGE);
 const posts = allPosts.slice(

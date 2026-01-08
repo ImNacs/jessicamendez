@@ -6,7 +6,7 @@ import { categoryConfig } from '@/lib/blog';
 
 interface Props {
   category: string;
-  size?: 'sm' | 'md';
+  size?: 'sm' | 'md' | 'lg';
   linked?: boolean;
 }
 
@@ -20,9 +20,11 @@ const config = categoryConfig[category] || {
   textDark: 'dark:text-gris-300',
 };
 
-const sizeClasses = size === 'sm'
-  ? 'px-2 py-0.5 text-xs'
-  : 'px-3 py-1 text-sm';
+const sizeClasses = {
+  sm: 'px-2 py-0.5 text-xs',
+  md: 'px-3 py-1 text-sm',
+  lg: 'px-4 py-1.5 text-base',
+}[size];
 
 const baseClasses = `inline-flex items-center rounded-full font-medium transition-all duration-200 ${sizeClasses} ${config.bgLight} ${config.bgDark} ${config.textLight} ${config.textDark}`;
 
