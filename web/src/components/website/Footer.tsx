@@ -1,6 +1,7 @@
 import { Leaf, Mail, Phone, LinkedinIcon } from 'lucide-react';
 import { profile } from '@/lib/utils';
 import { Logo } from '@/components/ui/Logo';
+import { NewsletterForm } from '@/components/blog/NewsletterForm';
 
 const navLinks = [
   { href: '/#inicio', label: 'Inicio' },
@@ -18,7 +19,7 @@ export function Footer() {
     <footer className="bg-verde-900 dark:bg-[#0d120d] text-white">
       <div className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-4 gap-10">
-          {/* Brand */}
+          {/* Brand + Newsletter */}
           <div className="md:col-span-2">
             <div className="mb-4">
               <Logo size="sm" variant="on-dark" />
@@ -26,10 +27,17 @@ export function Footer() {
             <p className="text-verde-200 dark:text-verde-300 text-sm mb-2">
               {profile.title}
             </p>
-            <p className="text-verde-300/70 dark:text-verde-400/70 text-sm max-w-md">
+            <p className="text-verde-300/70 dark:text-verde-400/70 text-sm max-w-md mb-6">
               Tu aliada en regulación ambiental y estrategias de sostenibilidad.
               Transformando desafíos ambientales en oportunidades de desarrollo sostenible.
             </p>
+            {/* Newsletter */}
+            <div className="max-w-sm">
+              <p className="text-verde-200 dark:text-verde-300 text-sm mb-3">
+                Suscríbete al newsletter
+              </p>
+              <NewsletterForm variant="inline" />
+            </div>
           </div>
 
           {/* Navigation */}

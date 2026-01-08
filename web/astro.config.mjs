@@ -5,10 +5,17 @@ import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import mdx from '@astrojs/mdx';
+import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://jessicamendez.bio',
+
+  // Adapter para Actions y endpoints dinámicos
+  // En Astro 5, static permite opt-in SSR por página/endpoint
+  adapter: node({
+    mode: 'standalone',
+  }),
 
   // Markdown/MDX configuration
   markdown: {

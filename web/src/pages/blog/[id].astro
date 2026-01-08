@@ -8,7 +8,7 @@ import BlogLayout from '@/layouts/BlogLayout.astro';
 import PostMeta from '@/components/blog/PostMeta.astro';
 import RelatedPosts from '@/components/blog/RelatedPosts.astro';
 import CategoryBadge from '@/components/blog/CategoryBadge.astro';
-import { ShareButtons, ReadingProgress, MobileBottomToolbar, TableOfContents } from '@/components/blog';
+import { ShareButtons, ReadingProgress, MobileBottomToolbar, TableOfContents, NewsletterForm } from '@/components/blog';
 import JsonLd from '@/components/seo/JsonLd.astro';
 import { calculateReadingTime, categoryConfig } from '@/lib/blog';
 import { profile } from '@/lib/utils';
@@ -192,7 +192,7 @@ const formattedDate = post.data.pubDate.toLocaleDateString('es-MX', {
               <img
                 src="/jessicamendez.webp"
                 alt={profile.name}
-                class="w-20 h-20 rounded-full object-cover border-4 border-white dark:border-verde-800 shadow-lg flex-shrink-0"
+                class="w-20 h-20 rounded-full object-cover object-top border-4 border-white dark:border-verde-800 shadow-lg flex-shrink-0"
                 loading="lazy"
               />
               <div class="text-center sm:text-left">
@@ -207,6 +207,11 @@ const formattedDate = post.data.pubDate.toLocaleDateString('es-MX', {
                 </p>
               </div>
             </div>
+          </div>
+
+          <!-- Newsletter CTA -->
+          <div class="mt-12">
+            <NewsletterForm client:visible />
           </div>
 
           <!-- Related Posts -->
