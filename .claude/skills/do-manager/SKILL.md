@@ -20,6 +20,65 @@ Usa esta skill cuando el usuario necesite:
 - Configurar load balancers
 - Cualquier operación relacionada con DigitalOcean
 
+---
+
+## Infraestructura Actual
+
+### Droplet: jessica-mendez
+
+| Campo | Valor |
+|-------|-------|
+| **ID** | 542544146 |
+| **Nombre** | jessica-mendez |
+| **IP Pública** | 165.227.201.91 |
+| **IP Secundaria** | 167.172.14.128 |
+| **IP Privada** | 10.116.0.2 |
+| **Región** | nyc1 (New York 1) |
+| **Size** | s-1vcpu-1gb |
+| **RAM** | 1GB |
+| **vCPUs** | 1 |
+| **Disco** | 25GB |
+| **OS** | Ubuntu 24.04 LTS |
+| **Precio** | $6/mes |
+| **Estado** | active |
+
+### Stack en el Droplet
+
+| Servicio | Puerto | Descripción |
+|----------|--------|-------------|
+| **Nginx** | 80, 443 | Reverse proxy + servidor estático |
+| **Docker** | - | Container runtime |
+| **NocoDB** | 8080 (interno) | Base de datos NoCode (Docker) |
+| **Certbot** | - | SSL/Let's Encrypt |
+
+### Dominios y DNS (jessicamendez.bio)
+
+| Tipo | Nombre | IP | Uso |
+|------|--------|-----|-----|
+| A | @ | 167.172.14.128 | Sitio principal |
+| A | admin | 167.172.14.128 | Panel admin (sin uso actual) |
+| A | hub | 167.172.14.128 | NocoDB |
+
+**URLs activas**:
+- https://jessicamendez.bio → Sitio web (Nginx estático)
+- https://hub.jessicamendez.bio → NocoDB (Nginx proxy → Docker)
+
+### SSH Keys
+
+| ID | Nombre | Uso |
+|----|--------|-----|
+| 53118039 | nacs-local | Key principal |
+| 42753913 | Nacs | Key secundaria |
+
+### Servicios Externos
+
+| Servicio | Uso | Conexión |
+|----------|-----|----------|
+| **Neon PostgreSQL** | DB para NocoDB | `ep-bitter-grass-ahzvhhrs-pooler.c-3.us-east-1.aws.neon.tech` |
+| **GitHub Actions** | CI/CD | Deploys automáticos a `/root/jessicamendez/web/dist` |
+
+---
+
 ## Configuración
 
 ### Token de Acceso
@@ -43,265 +102,155 @@ TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
 doctl account get --access-token $TOKEN
 ```
 
-## Instrucciones
+---
 
-### Paso 1: Identificar Operación
+## Operaciones Comunes
 
-Detectar qué recurso y acción necesita el usuario:
+### SSH al Droplet
 
-| Recurso | Comandos Base |
-|---------|---------------|
-| Droplets | `doctl compute droplet` |
-| SSH Keys | `doctl compute ssh-key` |
-| Firewalls | `doctl compute firewall` |
-| Volumes | `doctl compute volume` |
-| Databases | `doctl databases` |
-| Kubernetes | `doctl kubernetes` |
-| Apps | `doctl apps` |
-| Load Balancers | `doctl compute load-balancer` |
+```bash
+# Conexión directa
+ssh root@165.227.201.91
 
-### Paso 2: Ejecutar Operación
+# Via doctl
+TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
+doctl compute ssh jessica-mendez --access-token $TOKEN
+```
 
-#### Droplets (VPS)
+### Gestionar Servicios en el Droplet
 
-**Listar droplets**:
+```bash
+# Estado de Nginx
+ssh root@165.227.201.91 "systemctl status nginx"
+
+# Reiniciar Nginx
+ssh root@165.227.201.91 "systemctl restart nginx"
+
+# Ver contenedor NocoDB
+ssh root@165.227.201.91 "docker ps"
+
+# Logs de NocoDB
+ssh root@165.227.201.91 "docker logs nocodb --tail 50"
+
+# Reiniciar NocoDB
+ssh root@165.227.201.91 "docker restart nocodb"
+
+# Uso de memoria
+ssh root@165.227.201.91 "free -h"
+```
+
+### Crear Registro DNS
+
+```bash
+TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
+
+# Crear registro A
+doctl compute domain records create jessicamendez.bio \
+  --record-type A \
+  --record-name subdominio \
+  --record-data 165.227.201.91 \
+  --record-ttl 3600 \
+  --access-token $TOKEN
+```
+
+### Resize del Droplet (si se necesita más RAM)
+
+```bash
+TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
+
+# Upgrade a 2GB RAM ($12/mes)
+doctl compute droplet-action resize 542544146 \
+  --size s-1vcpu-2gb \
+  --access-token $TOKEN
+```
+
+### Crear Snapshot/Backup
+
+```bash
+TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
+
+doctl compute droplet-action snapshot 542544146 \
+  --snapshot-name "jessica-mendez-$(date +%Y%m%d)" \
+  --wait \
+  --access-token $TOKEN
+```
+
+---
+
+## Instrucciones por Recurso
+
+### Droplets
+
+**Listar**:
 ```bash
 TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
 doctl compute droplet list --access-token $TOKEN
 ```
 
-**Crear droplet**:
+**Crear**:
 ```bash
 TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
 doctl compute droplet create <nombre> \
   --size s-1vcpu-1gb \
   --image ubuntu-24-04-x64 \
   --region nyc1 \
-  --ssh-keys <key-id> \
+  --ssh-keys 53118039 \
   --wait \
   --access-token $TOKEN
 ```
 
-**Obtener info de droplet**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute droplet get <droplet-id> --access-token $TOKEN
-```
-
-**Eliminar droplet**:
+**Eliminar**:
 ```bash
 TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
 doctl compute droplet delete <droplet-id> --force --access-token $TOKEN
 ```
 
-**Acciones en droplet**:
+### DNS Records
+
+**Listar**:
 ```bash
 TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-# Reiniciar
-doctl compute droplet-action reboot <droplet-id> --access-token $TOKEN
-# Apagar
-doctl compute droplet-action power-off <droplet-id> --access-token $TOKEN
-# Encender
-doctl compute droplet-action power-on <droplet-id> --access-token $TOKEN
-# Snapshot
-doctl compute droplet-action snapshot <droplet-id> --snapshot-name "backup-$(date +%Y%m%d)" --access-token $TOKEN
-# Resize
-doctl compute droplet-action resize <droplet-id> --size s-2vcpu-4gb --access-token $TOKEN
+doctl compute domain records list jessicamendez.bio --access-token $TOKEN
 ```
 
-**Conectar por SSH**:
+**Crear**:
 ```bash
 TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute ssh <droplet-id-or-name> --access-token $TOKEN
+doctl compute domain records create jessicamendez.bio \
+  --record-type A \
+  --record-name <subdominio> \
+  --record-data 165.227.201.91 \
+  --record-ttl 3600 \
+  --access-token $TOKEN
 ```
 
-#### SSH Keys
+**Eliminar**:
+```bash
+TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
+doctl compute domain records delete jessicamendez.bio <record-id> --force --access-token $TOKEN
+```
 
-**Listar keys**:
+### SSH Keys
+
+**Listar**:
 ```bash
 TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
 doctl compute ssh-key list --access-token $TOKEN
 ```
 
-**Importar key desde archivo**:
+**Importar**:
 ```bash
 TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute ssh-key import <nombre> --public-key-file ~/.ssh/id_rsa.pub --access-token $TOKEN
-```
-
-**Crear key (texto directo)**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute ssh-key create <nombre> --public-key "ssh-rsa AAAA..." --access-token $TOKEN
-```
-
-#### Firewalls
-
-**Listar firewalls**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute firewall list --access-token $TOKEN
-```
-
-**Crear firewall básico (SSH + HTTP + HTTPS)**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute firewall create \
-  --name "web-firewall" \
-  --inbound-rules "protocol:tcp,ports:22,address:0.0.0.0/0 protocol:tcp,ports:80,address:0.0.0.0/0 protocol:tcp,ports:443,address:0.0.0.0/0" \
-  --outbound-rules "protocol:tcp,ports:all,address:0.0.0.0/0 protocol:udp,ports:all,address:0.0.0.0/0" \
-  --droplet-ids <droplet-id> \
+doctl compute ssh-key import <nombre> \
+  --public-key-file ~/.ssh/id_rsa.pub \
   --access-token $TOKEN
 ```
 
-**Agregar droplet a firewall**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute firewall add-droplets <firewall-id> --droplet-ids <droplet-id> --access-token $TOKEN
-```
+---
 
-#### Volumes (Almacenamiento)
+## Referencias Rápidas
 
-**Listar volúmenes**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute volume list --access-token $TOKEN
-```
-
-**Crear volumen**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute volume create <nombre> \
-  --size 100GiB \
-  --region nyc1 \
-  --access-token $TOKEN
-```
-
-#### Databases
-
-**Listar bases de datos**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl databases list --access-token $TOKEN
-```
-
-**Crear base de datos PostgreSQL**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl databases create <nombre> \
-  --engine pg \
-  --version 16 \
-  --size db-s-1vcpu-1gb \
-  --region nyc1 \
-  --num-nodes 1 \
-  --access-token $TOKEN
-```
-
-**Crear base de datos MySQL**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl databases create <nombre> \
-  --engine mysql \
-  --version 8 \
-  --size db-s-1vcpu-1gb \
-  --region nyc1 \
-  --num-nodes 1 \
-  --access-token $TOKEN
-```
-
-**Obtener conexión**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl databases connection <database-id> --access-token $TOKEN
-```
-
-#### Kubernetes (DOKS)
-
-**Listar clusters**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl kubernetes cluster list --access-token $TOKEN
-```
-
-**Crear cluster**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl kubernetes cluster create <nombre> \
-  --region nyc1 \
-  --version latest \
-  --node-pool "name=default;size=s-2vcpu-4gb;count=2" \
-  --access-token $TOKEN
-```
-
-**Obtener kubeconfig**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl kubernetes cluster kubeconfig save <cluster-id> --access-token $TOKEN
-```
-
-#### App Platform
-
-**Listar apps**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl apps list --access-token $TOKEN
-```
-
-**Crear app desde spec**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl apps create --spec app-spec.yaml --access-token $TOKEN
-```
-
-**Ver logs**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl apps logs <app-id> --access-token $TOKEN
-```
-
-#### Load Balancers
-
-**Listar load balancers**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute load-balancer list --access-token $TOKEN
-```
-
-**Crear load balancer**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute load-balancer create \
-  --name "my-lb" \
-  --region nyc1 \
-  --forwarding-rules "entry_protocol:http,entry_port:80,target_protocol:http,target_port:80" \
-  --droplet-ids <id1>,<id2> \
-  --access-token $TOKEN
-```
-
-### Paso 3: Consultar Referencias
-
-#### Regiones Disponibles
-
-| Slug | Nombre | Disponible |
-|------|--------|------------|
-| nyc1 | New York 1 | Si |
-| nyc3 | New York 3 | Si |
-| sfo3 | San Francisco 3 | Si |
-| ams3 | Amsterdam 3 | Si |
-| fra1 | Frankfurt 1 | Si |
-| lon1 | London 1 | Si |
-| sgp1 | Singapore 1 | Si |
-| blr1 | Bangalore 1 | Si |
-| tor1 | Toronto 1 | Si |
-| syd1 | Sydney 1 | Si |
-
-**Listar regiones actualizadas**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute region list --access-token $TOKEN
-```
-
-#### Tamaños Populares (Droplets)
+### Tamaños Populares
 
 | Slug | vCPUs | RAM | Disco | Precio/mes |
 |------|-------|-----|-------|------------|
@@ -310,155 +259,50 @@ doctl compute region list --access-token $TOKEN
 | s-1vcpu-2gb | 1 | 2GB | 50GB | $12 |
 | s-2vcpu-2gb | 2 | 2GB | 60GB | $18 |
 | s-2vcpu-4gb | 2 | 4GB | 80GB | $24 |
-| s-4vcpu-8gb | 4 | 8GB | 160GB | $48 |
 
-**Listar todos los tamaños**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-doctl compute size list --access-token $TOKEN
-```
+### Regiones
 
-#### Imágenes Populares
+| Slug | Nombre |
+|------|--------|
+| nyc1 | New York 1 |
+| nyc3 | New York 3 |
+| sfo3 | San Francisco 3 |
+| ams3 | Amsterdam 3 |
+| fra1 | Frankfurt 1 |
+| lon1 | London 1 |
+| sgp1 | Singapore 1 |
 
-| Slug | Descripción |
-|------|-------------|
-| ubuntu-24-04-x64 | Ubuntu 24.04 LTS |
-| ubuntu-22-04-x64 | Ubuntu 22.04 LTS |
-| debian-12-x64 | Debian 12 |
-| centos-stream-9-x64 | CentOS Stream 9 |
-| fedora-40-x64 | Fedora 40 |
-| docker-20-04 | Docker on Ubuntu 20.04 |
-| lamp-22-04 | LAMP on Ubuntu 22.04 |
-| nodejs-22-04 | Node.js on Ubuntu 22.04 |
-
-**Listar imágenes**:
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-# Distribuciones
-doctl compute image list-distribution --access-token $TOKEN
-# Aplicaciones 1-click
-doctl compute image list-application --access-token $TOKEN
-# Mis imágenes/snapshots
-doctl compute image list-user --access-token $TOKEN
-```
-
-#### Tamaños de Base de Datos
-
-| Slug | vCPUs | RAM | Precio/mes |
-|------|-------|-----|------------|
-| db-s-1vcpu-1gb | 1 | 1GB | $15 |
-| db-s-1vcpu-2gb | 1 | 2GB | $30 |
-| db-s-2vcpu-4gb | 2 | 4GB | $60 |
-
-## Patrones Comunes
-
-### Crear Droplet Web Completo
-
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-
-# 1. Obtener SSH key ID
-SSH_KEY=$(doctl compute ssh-key list --access-token $TOKEN --format ID --no-header | head -1)
-
-# 2. Crear droplet
-doctl compute droplet create mi-servidor \
-  --size s-1vcpu-2gb \
-  --image ubuntu-24-04-x64 \
-  --region nyc1 \
-  --ssh-keys $SSH_KEY \
-  --enable-monitoring \
-  --wait \
-  --access-token $TOKEN
-
-# 3. Obtener IP
-DROPLET_ID=$(doctl compute droplet list --access-token $TOKEN --format ID --no-header | head -1)
-IP=$(doctl compute droplet get $DROPLET_ID --access-token $TOKEN --format PublicIPv4 --no-header)
-
-echo "Droplet creado. IP: $IP"
-```
-
-### Crear Droplet con User Data (Script Inicial)
-
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-
-doctl compute droplet create mi-servidor \
-  --size s-1vcpu-2gb \
-  --image ubuntu-24-04-x64 \
-  --region nyc1 \
-  --ssh-keys $(doctl compute ssh-key list --access-token $TOKEN --format ID --no-header | head -1) \
-  --user-data '#!/bin/bash
-apt update && apt upgrade -y
-apt install -y nginx
-systemctl enable nginx
-systemctl start nginx' \
-  --wait \
-  --access-token $TOKEN
-```
-
-### Backup Completo de Droplet
-
-```bash
-TOKEN=$(grep DIGITALOCEAN_ACCESS_TOKEN .env.local | cut -d= -f2)
-
-# Crear snapshot
-doctl compute droplet-action snapshot <droplet-id> \
-  --snapshot-name "backup-$(date +%Y%m%d-%H%M%S)" \
-  --wait \
-  --access-token $TOKEN
-```
+---
 
 ## Manejo de Errores
 
 ### Error: "access token is required"
-1. Verificar que `.env.local` existe y contiene `DIGITALOCEAN_ACCESS_TOKEN`
-2. Verificar sintaxis: `cat .env.local | grep DIGITAL`
+1. Verificar que `.env.local` existe
+2. Verificar sintaxis: `grep DIGITALOCEAN_ACCESS_TOKEN .env.local`
 3. Asegurar que el token no tiene espacios extra
 
 ### Error: "You do not have access for the attempted action"
 1. Token expirado o inválido
-2. Regenerar token en: https://cloud.digitalocean.com/account/api/tokens
-3. Verificar permisos del token (read/write)
+2. Regenerar en: https://cloud.digitalocean.com/account/api/tokens
 
 ### Error: "Droplet limit reached"
-1. Verificar límite actual: `doctl account get --access-token $TOKEN`
+1. Verificar límite: `doctl account get --access-token $TOKEN`
 2. Eliminar droplets no usados
-3. Solicitar aumento de límite en panel de DO
 
-### Error: "Region not available"
-1. Listar regiones disponibles: `doctl compute region list --access-token $TOKEN`
-2. Usar región alternativa
-3. Algunas imágenes no están en todas las regiones
+### Error: NocoDB no responde
+1. Verificar contenedor: `ssh root@165.227.201.91 "docker ps"`
+2. Ver logs: `ssh root@165.227.201.91 "docker logs nocodb --tail 100"`
+3. Reiniciar: `ssh root@165.227.201.91 "docker restart nocodb"`
 
-### Error: "Size not available in region"
-1. Verificar tamaños en región: `doctl compute size list --access-token $TOKEN`
-2. Usar tamaño alternativo o cambiar región
+### Error: Sitio web no actualiza
+1. Verificar GitHub Actions: `gh run list --repo ImNacs/jessicamendez --limit 3`
+2. Verificar archivos: `ssh root@165.227.201.91 "ls -la /root/jessicamendez/web/dist"`
+3. Recargar Nginx: `ssh root@165.227.201.91 "nginx -t && systemctl reload nginx"`
 
-### Error: "SSH key not found"
-1. Listar keys: `doctl compute ssh-key list --access-token $TOKEN`
-2. Importar key si no existe
-3. Usar ID numérico, no nombre
-
-## Output Formats
-
-Doctl soporta diferentes formatos de salida:
-
-```bash
-# Texto (default)
-doctl compute droplet list --access-token $TOKEN
-
-# JSON
-doctl compute droplet list --access-token $TOKEN -o json
-
-# Solo campos específicos
-doctl compute droplet list --access-token $TOKEN --format ID,Name,PublicIPv4,Status
-
-# Sin headers (útil para scripts)
-doctl compute droplet list --access-token $TOKEN --format ID --no-header
-```
+---
 
 ## Recursos
 
+- Panel DO: https://cloud.digitalocean.com
 - Documentación doctl: https://docs.digitalocean.com/reference/doctl/
 - API Reference: https://docs.digitalocean.com/reference/api/
-- Precios: https://www.digitalocean.com/pricing
