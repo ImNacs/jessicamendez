@@ -63,6 +63,11 @@ jobs:
             # Setup PATH for bun-installed packages
             export PATH="$HOME/.bun/bin:$PATH"
 
+            # Load environment variables
+            set -a
+            source /root/jessicamendez/.env
+            set +a
+
             cd ${{ env.DEPLOY_PATH }}
 
             # Atomic swap (zero downtime)
@@ -73,10 +78,10 @@ jobs:
 
             # Restart Node server with PM2
             if pm2 describe jessicamendez > /dev/null 2>&1; then
-              pm2 reload jessicamendez
+              pm2 reload jessicamendez --update-env
             else
               cd dist/server
-              pm2 start entry.mjs --name jessicamendez --env production
+              pm2 start entry.mjs --name jessicamendez
             fi
 
             pm2 save
