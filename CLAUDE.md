@@ -59,6 +59,10 @@ git push origin main        # Trigger deploy a producción
 **Triggers**: crear skill, nueva skill, generar skill
 **Ubicación**: `.claude/skills/skill-builder/`
 
+#### `content-generator`
+**Triggers**: contenido, blog, crear post, nueva entrada, generar artículo, publicar, SEO blog
+**Ubicación**: `.claude/skills/content-generator/` | Incluye plantillas, checklist SEO y banco de ideas
+
 #### `do-manager`
 **Triggers**: droplet, DigitalOcean, DO, servidor, VPS, SSH, DNS
 **Ubicación**: `.claude/skills/do-manager/` | Incluye info de infraestructura actual
@@ -66,6 +70,10 @@ git push origin main        # Trigger deploy a producción
 #### `nocodb-manager`
 **Triggers**: NocoDB, hub, base de datos, crear tabla, insertar registros, API NocoDB
 **Ubicación**: `.claude/skills/nocodb-manager/`
+
+#### `email-sender`
+**Triggers**: enviar email, email de bienvenida, confirmación, newsletter, notificación, correo, email transaccional
+**Ubicación**: `.claude/skills/email-sender/` | Resend + React Email
 
 #### `claude-md-maintainer`
 **Triggers**: optimizar CLAUDE.md, revisar CLAUDE.md, analizar CLAUDE.md
@@ -103,7 +111,7 @@ Verifica documentación, crea commits estructurados y pushea cambios.
 
 ### Contenido
 - El sitio es bilingüe pero prioriza español
-- Categorías del blog: arquitectura, diseno-sostenible, inspiracion, proyectos
+- Categorías del blog: ESG, Regulacion-Ambiental, IFC, Sostenibilidad, Estudios-Ambientales
 - Usar componentes MDX disponibles: Callout, LinkCard, Figure, Embed
 
 ## Infraestructura
