@@ -51,8 +51,8 @@ Usa esta skill cuando el usuario necesite:
 | **PM2** | - | Process manager para Node.js |
 | **Astro SSR** | 4321 (interno) | Sitio web (hybrid mode) |
 | **Docker** | - | Container runtime |
-| **NocoDB** | 8080 (interno) | Base de datos NoCode (Docker) |
-| **Umami** | 3001 (interno) | Analytics (Docker) |
+| **NocoDB** | 8080 (interno) | Base de datos NoCode (Docker) - requiere `searchPath:["public"]` |
+| **Umami** | 3001 (interno) | Analytics (Docker) - usa schema `umami` |
 | **Certbot** | - | SSL/Let's Encrypt |
 
 ### Dominios y DNS (jessicamendez.bio)
@@ -173,6 +173,13 @@ ssh root@165.227.201.91 "docker logs nocodb --tail 50"
 
 # Reiniciar NocoDB
 ssh root@165.227.201.91 "docker restart nocodb"
+
+# Recrear NocoDB (si hay problemas de search_path)
+# IMPORTANTE: Incluir searchPath:["public"] porque comparte DB con Umami
+ssh root@165.227.201.91 "docker stop nocodb && docker rm nocodb && \
+docker run -d --name nocodb --restart always -p 8080:8080 \
+-e 'NC_DB_JSON={\"client\":\"pg\",\"connection\":{\"host\":\"ep-bitter-grass-ahzvhhrs-pooler.c-3.us-east-1.aws.neon.tech\",\"port\":5432,\"user\":\"neondb_owner\",\"password\":\"npg_w79sUVdjyBoW\",\"database\":\"neondb\",\"ssl\":{\"rejectUnauthorized\":false}},\"searchPath\":[\"public\"]}' \
+nocodb/nocodb:latest"
 
 # === Sistema ===
 # Uso de memoria

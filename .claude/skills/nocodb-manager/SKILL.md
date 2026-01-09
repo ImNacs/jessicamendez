@@ -425,6 +425,35 @@ done
 2. Ver logs: `ssh root@165.227.201.91 "docker logs nocodb --tail 50"`
 3. Reiniciar: `ssh root@165.227.201.91 "docker restart nocodb"`
 
+### Error: "The table 'nc_users_v2' does not exist"
+
+Este error ocurre cuando el `search_path` de PostgreSQL no incluye el schema `public`. Es común cuando NocoDB y Umami comparten la misma base de datos Neon y el usuario tiene `search_path=umami`.
+
+**Diagnóstico**:
+```bash
+# Verificar search_path actual
+ssh root@165.227.201.91 "docker exec nocodb node -e \"
+const { Client } = require('pg');
+const client = new Client({
+  host: 'ep-bitter-grass-ahzvhhrs-pooler.c-3.us-east-1.aws.neon.tech',
+  port: 5432, user: 'neondb_owner', password: 'npg_w79sUVdjyBoW',
+  database: 'neondb', ssl: { rejectUnauthorized: false }
+});
+client.connect().then(() => client.query('SHOW search_path'))
+  .then(res => { console.log(res.rows[0].search_path); client.end(); });
+\""
+```
+
+**Solución**: Recrear el contenedor con `searchPath` explícito:
+```bash
+ssh root@165.227.201.91 "docker stop nocodb && docker rm nocodb && \
+docker run -d --name nocodb --restart always -p 8080:8080 \
+-e 'NC_DB_JSON={\"client\":\"pg\",\"connection\":{\"host\":\"ep-bitter-grass-ahzvhhrs-pooler.c-3.us-east-1.aws.neon.tech\",\"port\":5432,\"user\":\"neondb_owner\",\"password\":\"npg_w79sUVdjyBoW\",\"database\":\"neondb\",\"ssl\":{\"rejectUnauthorized\":false}},\"searchPath\":[\"public\"]}' \
+nocodb/nocodb:latest"
+```
+
+**Importante**: Siempre incluir `"searchPath":["public"]` en `NC_DB_JSON` cuando se comparte base de datos con otros servicios.
+
 ---
 
 ## Recursos
