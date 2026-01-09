@@ -11,6 +11,34 @@ interface NewsletterFormProps {
   className?: string;
 }
 
+/** Input de email con icono - reutilizable */
+function EmailInput({
+  email,
+  setEmail,
+  disabled,
+  className = ''
+}: {
+  email: string;
+  setEmail: (v: string) => void;
+  disabled: boolean;
+  className?: string;
+}) {
+  return (
+    <div className={`relative ${className}`}>
+      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gris-400 dark:text-crema-500 pointer-events-none" />
+      <Input
+        type="email"
+        placeholder="tu@email.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        disabled={disabled}
+        aria-label="Email para newsletter"
+        className="pl-10"
+      />
+    </div>
+  );
+}
+
 export function NewsletterForm({
   variant = 'card',
   className = '',
@@ -81,18 +109,12 @@ export function NewsletterForm({
     return (
       <form onSubmit={handleSubmit} className={`relative ${className}`}>
         <div className="flex flex-col sm:flex-row gap-3">
-          <div className="flex-1 relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gris-400" />
-            <Input
-              type="email"
-              placeholder="tu@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="pl-10"
-              disabled={status === 'loading'}
-              aria-label="Email para newsletter"
-            />
-          </div>
+          <EmailInput
+            email={email}
+            setEmail={setEmail}
+            disabled={status === 'loading'}
+            className="flex-1"
+          />
           <Button
             type="submit"
             disabled={status === 'loading'}
@@ -142,14 +164,7 @@ export function NewsletterForm({
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
-        <Input
-          type="email"
-          placeholder="tu@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          disabled={status === 'loading'}
-          aria-label="Email para newsletter"
-        />
+        <EmailInput email={email} setEmail={setEmail} disabled={status === 'loading'} />
         <Button
           type="submit"
           disabled={status === 'loading'}

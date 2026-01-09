@@ -29,10 +29,27 @@ const highlights = [
   'Consulta pública y relacionamiento comunitario',
 ];
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, x: 10 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.4, ease: 'easeOut' },
+  },
+};
+
 export function About() {
   return (
-    <section id="acerca" className="py-16 sm:py-20 bg-verde-50/30 dark:bg-verde-950/30">
-      <div className="container mx-auto px-4">
+    <section id="acerca" className="py-16 sm:py-20 bg-verde-50/50 dark:bg-verde-950/30">
+      <div className="container mx-auto px-4 sm:px-6">
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           {/* Left - Image */}
           <motion.div
@@ -43,8 +60,14 @@ export function About() {
             className="relative order-2 lg:order-1"
           >
             <div className="relative max-w-md mx-auto lg:max-w-none">
-              {/* Image */}
-              <div className="relative bg-white dark:bg-verde-900/50 p-2 rounded-2xl shadow-lg dark:shadow-verde-900/30">
+              {/* Decorative frame */}
+              <div
+                className="absolute -inset-3 border-2 border-verde-200 dark:border-verde-700 rounded-2xl transform -rotate-2"
+                aria-hidden="true"
+              />
+
+              {/* Image container */}
+              <div className="relative bg-white dark:bg-verde-900/50 p-2 rounded-2xl shadow-xl dark:shadow-verde-900/30">
                 <img
                   src="/jessicamendez.webp"
                   alt="Jessica Méndez - Bióloga y Consultora Ambiental"
@@ -54,9 +77,9 @@ export function About() {
               </div>
 
               {/* Experience badge */}
-              <div className="absolute -bottom-3 -right-3 sm:-bottom-4 sm:-right-4 bg-verde-600 dark:bg-verde-500 text-white dark:text-verde-950 px-4 py-2 sm:px-5 sm:py-3 rounded-xl shadow-lg">
-                <p className="text-xl sm:text-2xl font-bold">{profile.experience}</p>
-                <p className="text-xs opacity-90">de experiencia</p>
+              <div className="absolute -bottom-4 -right-4 sm:-bottom-5 sm:-right-5 bg-verde-600 dark:bg-verde-500 text-white dark:text-verde-950 px-5 py-3 rounded-xl shadow-lg">
+                <p className="text-2xl sm:text-3xl font-serif font-semibold">{profile.experience}</p>
+                <p className="text-xs uppercase tracking-wider opacity-90">de experiencia</p>
               </div>
             </div>
           </motion.div>
@@ -69,10 +92,17 @@ export function About() {
             transition={{ duration: 0.6 }}
             className="order-1 lg:order-2"
           >
-            <h2 className="text-2xl sm:text-3xl md:text-[2.25rem] text-gris-900 dark:text-crema-100 mb-2">
+            {/* Section label */}
+            <span className="text-sm text-rosa-500 dark:text-rosa-400 uppercase tracking-wider mb-3 block">
+              Sobre mí
+            </span>
+
+            <h2 className="text-gris-900 dark:text-crema-100 mb-2">
               {profile.name}
             </h2>
-            <p className="text-rosa-600 dark:text-rosa-400 font-medium mb-4">{profile.title}</p>
+            <p className="text-rosa-600 dark:text-rosa-400 font-medium text-lg mb-4">
+              {profile.title}
+            </p>
 
             <p className="text-base sm:text-lg text-gris-700 dark:text-crema-300 mb-6 leading-relaxed">
               Consultora independiente especializada en la gestión ambiental y social
@@ -80,26 +110,34 @@ export function About() {
               México, Centroamérica y República Dominicana.
             </p>
 
-            {/* Key highlights - Progressive disclosure on mobile */}
-            <div className="space-y-2 mb-6">
+            {/* Key highlights */}
+            <motion.ul
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="space-y-3 mb-6"
+            >
               {highlights.map((item, index) => (
-                <motion.div
+                <motion.li
                   key={index}
-                  initial={{ opacity: 0, x: 10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  className="flex items-start gap-2"
+                  variants={itemVariants}
+                  className="flex items-start gap-3"
                 >
-                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-verde-500 dark:text-verde-400 mt-0.5 shrink-0" />
-                  <span className="text-sm sm:text-base text-gris-600 dark:text-crema-300">{item}</span>
-                </motion.div>
+                  <CheckCircle
+                    className="h-5 w-5 text-verde-500 dark:text-verde-400 mt-0.5 shrink-0"
+                    aria-hidden="true"
+                  />
+                  <span className="text-sm sm:text-base text-gris-600 dark:text-crema-300">
+                    {item}
+                  </span>
+                </motion.li>
               ))}
-            </div>
+            </motion.ul>
 
             {/* Quote */}
-            <div className="p-4 bg-white dark:bg-verde-900/40 border-l-4 border-verde-500 dark:border-verde-400 rounded-r-lg shadow-sm">
-              <p className="text-verde-800 dark:text-verde-200 italic font-serif text-sm sm:text-base">
+            <div className="p-5 bg-white dark:bg-verde-900/40 border-l-4 border-verde-500 dark:border-verde-400 rounded-r-xl shadow-sm">
+              <p className="text-verde-800 dark:text-verde-200 italic font-serif text-base sm:text-lg leading-relaxed">
                 "Combino conocimiento normativo local con estándares internacionales
                 para crear valor sostenible en cada proyecto."
               </p>
@@ -107,26 +145,33 @@ export function About() {
           </motion.div>
         </div>
 
-        {/* Differentiators - Below on all screens */}
+        {/* Differentiators */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="mt-12 sm:mt-16 grid sm:grid-cols-3 gap-6"
+          className="mt-16 grid sm:grid-cols-3 gap-6"
         >
           {differentiators.map((item, index) => {
             const Icon = item.icon;
             return (
               <div
                 key={index}
-                className="text-center p-4 sm:p-6 bg-white dark:bg-verde-900/30 rounded-xl shadow-sm dark:shadow-verde-900/20"
+                className="group text-center p-6 bg-white dark:bg-verde-900/30 rounded-xl shadow-sm dark:shadow-verde-900/20 hover:shadow-lg dark:hover:shadow-verde-900/40 transition-all duration-300 card-hover"
               >
-                <div className="w-12 h-12 mx-auto mb-3 rounded-full bg-verde-100 dark:bg-verde-800/50 flex items-center justify-center">
-                  <Icon className="h-6 w-6 text-verde-600 dark:text-verde-400" />
+                <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-verde-100 dark:bg-verde-800/50 flex items-center justify-center group-hover:bg-verde-200 dark:group-hover:bg-verde-700/50 transition-colors">
+                  <Icon
+                    className="h-7 w-7 text-verde-600 dark:text-verde-400"
+                    aria-hidden="true"
+                  />
                 </div>
-                <h3 className="text-base text-gris-800 dark:text-crema-100 mb-1">{item.title}</h3>
-                <p className="text-sm text-gris-600 dark:text-crema-300">{item.description}</p>
+                <h3 className="text-base sm:text-lg font-serif text-gris-800 dark:text-crema-100 mb-2">
+                  {item.title}
+                </h3>
+                <p className="text-sm text-gris-600 dark:text-crema-300">
+                  {item.description}
+                </p>
               </div>
             );
           })}

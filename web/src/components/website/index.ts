@@ -1,6 +1,5 @@
 // Website Components
-export { Header } from './Header';
-export { Hero } from './Hero';
+// Note: Hero and Header are Astro components, import directly from .astro files
 export { Services } from './Services';
 export { About } from './About';
 export { Experience } from './Experience';

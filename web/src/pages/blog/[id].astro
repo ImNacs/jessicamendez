@@ -8,7 +8,7 @@ import BlogLayout from '@/layouts/BlogLayout.astro';
 import PostMeta from '@/components/blog/PostMeta.astro';
 import RelatedPosts from '@/components/blog/RelatedPosts.astro';
 import CategoryBadge from '@/components/blog/CategoryBadge.astro';
-import { ShareButtons, ReadingProgress, MobileBottomToolbar, TableOfContents, NewsletterForm } from '@/components/blog';
+import { ShareButtons, ReadingProgress, MobileBottomToolbar, TableOfContents, LeadMagnetForm } from '@/components/blog';
 import JsonLd from '@/components/seo/JsonLd.astro';
 import { calculateReadingTime, categoryConfig } from '@/lib/blog';
 import { profile } from '@/lib/utils';
@@ -60,6 +60,20 @@ const formattedDate = post.data.pubDate.toLocaleDateString('es-MX', {
   month: 'long',
   year: 'numeric',
 });
+
+// Lead magnet config
+const leadMagnetConfig = {
+  id: 'due_diligence_esg',
+  label: 'Guía gratuita',
+  title: 'Due Diligence ESG',
+  description: 'Lo que evalúan los bancos antes de financiar',
+  benefits: [
+    'Criterios ESG que revisan IFC y bancos',
+    'Checklist de documentación requerida',
+    'Red flags que debes evitar',
+  ],
+  buttonText: 'Descargar gratis',
+};
 ---
 
 <BlogLayout
@@ -91,11 +105,11 @@ const formattedDate = post.data.pubDate.toLocaleDateString('es-MX', {
   <!-- Reading Progress Bar -->
   <ReadingProgress client:load />
 
-  <article class="min-h-screen">
+  <article id="main-content" class="min-h-screen">
     <!-- Header Section -->
     <header class="max-w-5xl mx-auto px-4 sm:px-6 pt-24 pb-8 border-b border-verde-200 dark:border-verde-800">
       <!-- Breadcrumbs -->
-      <nav aria-label="Breadcrumb" class="mb-6 animate-fade-in-up">
+      <nav aria-label="Breadcrumb" class="mb-6">
         <ol class="flex flex-wrap items-center gap-2 text-sm">
           <li>
             <a href="/" class="text-gris-500 dark:text-crema-400 hover:text-verde-600 dark:hover:text-verde-400 transition-colors">
@@ -116,26 +130,25 @@ const formattedDate = post.data.pubDate.toLocaleDateString('es-MX', {
       </nav>
 
       <!-- Category Badge -->
-      <div class="mb-4 animate-fade-in-up" style="animation-delay: 50ms">
+      <div class="mb-4">
         <CategoryBadge category={post.data.category} size="lg" />
       </div>
 
-      <!-- Title -->
+      <!-- Title (no CSS animation - View Transition handles entrance) -->
       <h1
-        class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gris-900 dark:text-crema-100 mb-4 leading-tight animate-fade-in-up"
-        style="animation-delay: 100ms"
+        class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-gris-900 dark:text-crema-100 mb-4 leading-tight"
         transition:name={`blog-title-${post.id}`}
       >
         {post.data.title}
       </h1>
 
       <!-- Description -->
-      <p class="text-base sm:text-lg text-gris-600 dark:text-crema-300 mb-6 max-w-3xl animate-fade-in-up" style="animation-delay: 150ms">
+      <p class="text-base sm:text-lg text-gris-600 dark:text-crema-300 mb-6 max-w-3xl">
         {post.data.description}
       </p>
 
       <!-- Metadata -->
-      <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gris-500 dark:text-crema-400 animate-fade-in-up" style="animation-delay: 200ms">
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-sm text-gris-500 dark:text-crema-400">
         <time datetime={post.data.pubDate.toISOString()}>
           {formattedDate}
         </time>
@@ -149,9 +162,9 @@ const formattedDate = post.data.pubDate.toLocaleDateString('es-MX', {
       <div class="flex flex-col xl:flex-row gap-8">
         <!-- Article Content -->
         <div class="flex-1 min-w-0 max-w-3xl">
-          <!-- Hero Image -->
+          <!-- Hero Image (no CSS animation - View Transition handles entrance) -->
           {post.data.heroImage && (
-            <div class="mb-8 lg:mb-12 animate-fade-in-up" style="animation-delay: 250ms">
+            <div class="mb-8 lg:mb-12">
               <img
                 src={post.data.heroImage.src}
                 alt={post.data.heroImageAlt || post.data.title}
@@ -209,9 +222,9 @@ const formattedDate = post.data.pubDate.toLocaleDateString('es-MX', {
             </div>
           </div>
 
-          <!-- Newsletter CTA -->
+          <!-- Lead Magnet CTA -->
           <div class="mt-12">
-            <NewsletterForm client:visible />
+            <LeadMagnetForm config={leadMagnetConfig} variant="blog" client:visible />
           </div>
 
           <!-- Related Posts -->

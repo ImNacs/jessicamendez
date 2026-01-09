@@ -34,15 +34,18 @@ const description = 'Articulos sobre ESG, regulacion ambiental, IFC Performance 
 <BlogLayout title={title} description={description}>
   <JsonLd slot="head" type="WebSite" />
 
-  <main class="min-h-screen">
-    {/* Hero Section - Simplified KISS */}
+  <main id="main-content" class="min-h-screen">
+    {/* Hero Section */}
     <section class="pt-24 sm:pt-28 pb-8 sm:pb-12 bg-white dark:bg-[#151a15]">
       <div class="container mx-auto px-4">
-        <div class="max-w-3xl mx-auto">
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-gris-900 dark:text-crema-100 mb-3">
+        <div class="max-w-3xl mx-auto text-center">
+          <span class="text-sm text-rosa-500 dark:text-rosa-400 uppercase tracking-wider mb-3 block">
+            Artículos y Recursos
+          </span>
+          <h1 class="text-gris-900 dark:text-crema-100 mb-4">
             Blog
           </h1>
-          <p class="text-base sm:text-lg text-gris-600 dark:text-crema-300">
+          <p class="text-base sm:text-lg text-gris-600 dark:text-crema-300 max-w-xl mx-auto">
             Perspectivas sobre medio ambiente, sostenibilidad y regulación ambiental
           </p>
         </div>

@@ -116,7 +116,10 @@ export function Services() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-[2.25rem] text-gris-900 dark:text-crema-100 mb-4">
+          <span className="text-sm text-rosa-500 dark:text-rosa-400 uppercase tracking-wider mb-3 block">
+            Consultoría
+          </span>
+          <h2 className="text-gris-900 dark:text-crema-100 mb-4">
             Servicios Especializados
           </h2>
           <p className="text-base sm:text-lg text-gris-600 dark:text-crema-300 max-w-2xl mx-auto">
@@ -141,7 +144,7 @@ export function Services() {
             return (
               <motion.div key={service.id} variants={cardVariants}>
                 <Card
-                  className={`h-full transition-all duration-300 ${
+                  className={`h-full transition-all duration-300 card-hover ${
                     isMobile ? 'cursor-pointer' : ''
                   } ${
                     service.highlight

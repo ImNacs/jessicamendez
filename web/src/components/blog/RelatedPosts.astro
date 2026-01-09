@@ -25,7 +25,7 @@ if (posts.length === 0) return null;
     {posts.map((post) => (
       <a
         href={`/blog/${post.id}/`}
-        class="group block bg-gris-50 dark:bg-verde-900/20 rounded-xl p-5 border border-border hover:border-verde-300 dark:hover:border-verde-700 transition-all duration-300 hover:shadow-lg"
+        class="group block bg-gris-50 dark:bg-verde-900/20 rounded-xl p-5 border border-border hover:border-verde-300 dark:hover:border-verde-700 card-hover"
       >
         <CategoryBadge category={post.data.category} size="sm" linked={false} />
 

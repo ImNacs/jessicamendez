@@ -31,11 +31,14 @@ export function Footer() {
               Tu aliada en regulación ambiental y estrategias de sostenibilidad.
               Transformando desafíos ambientales en oportunidades de desarrollo sostenible.
             </p>
-            {/* Newsletter - TODO: Habilitar cuando se configure dominio en Resend */}
+            {/* Newsletter - Se mostrará cuando se configure el dominio en Resend */}
             {!import.meta.env.PROD && (
-              <div className="max-w-sm">
-                <p className="text-verde-200 dark:text-verde-300 text-sm mb-3">
+              <div className="max-w-sm p-4 bg-verde-800/50 dark:bg-verde-950/50 rounded-xl border border-verde-700/50 dark:border-verde-800/50">
+                <p className="text-white font-medium text-sm mb-2">
                   Suscríbete al newsletter
+                </p>
+                <p className="text-verde-300 dark:text-verde-400 text-xs mb-3">
+                  Recibe artículos sobre regulación ambiental y sostenibilidad.
                 </p>
                 <NewsletterForm variant="inline" />
               </div>

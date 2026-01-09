@@ -12,7 +12,7 @@ import { Footer } from '../components/website/Footer';
 <Layout>
   <Header />
 
-  <main>
+  <main id="main-content">
     <Hero />
     <Services client:visible />
     <About client:visible />
@@ -20,5 +20,5 @@ import { Footer } from '../components/website/Footer';
     <Contact client:visible />
   </main>
 
-  <Footer />
+  <Footer client:idle />
 </Layout>

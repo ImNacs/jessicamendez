@@ -17,7 +17,10 @@ export function Contact() {
           transition={{ duration: 0.6 }}
           className="text-center mb-10 sm:mb-12"
         >
-          <h2 className="text-2xl sm:text-3xl md:text-[2.25rem] mb-3">
+          <span className="text-sm text-rosa-300 dark:text-rosa-400 uppercase tracking-wider mb-3 block">
+            Contacto
+          </span>
+          <h2 className="text-white mb-3">
             Trabajemos Juntos
           </h2>
           <p className="text-base sm:text-lg text-verde-100 dark:text-verde-200 max-w-xl mx-auto">

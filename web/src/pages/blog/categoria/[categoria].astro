@@ -42,11 +42,11 @@ const description = `Articulos sobre ${config.name}. Perspectivas y guias sobre 
 <BlogLayout title={title} description={description}>
   <JsonLd slot="head" type="WebSite" />
 
-  <main class="min-h-screen">
-    {/* Hero Section */}
+  <main id="main-content" class="min-h-screen">
+    {/* Hero Section (no CSS animation - View Transition handles page entrance) */}
     <section class="bg-gradient-hero-v2 dark:bg-gradient-to-b dark:from-[#151a15] dark:to-verde-900/20 pt-28 pb-16">
       <div class="container mx-auto px-4">
-        <div class="text-center max-w-3xl mx-auto animate-fade-in-up">
+        <div class="text-center max-w-3xl mx-auto">
           {/* Breadcrumb */}
           <nav class="mb-6 text-sm" aria-label="Breadcrumb">
             <ol class="flex justify-center items-center gap-2 text-gris-500 dark:text-crema-400">

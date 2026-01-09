@@ -1,5 +1,6 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
+import { fade } from 'astro:transitions';
 import '../styles/global.css';
 
 interface Props {
@@ -38,10 +39,18 @@ const {
     <link rel="canonical" href="https://jessicamendez.bio" />
     <title>{title}</title>
 
-    <!-- Theme script - MUST be in head to prevent flash during View Transitions -->
+    <!-- Preload critical fonts -->
+    <link
+      rel="preload"
+      href="/node_modules/@fontsource-variable/cormorant/files/cormorant-latin-wght-normal.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <!-- Theme script - MUST be in head to prevent flash -->
     <script is:inline>
       (function() {
-        // Prevent multiple initializations
         if (window.__themeInitialized) return;
         window.__themeInitialized = true;
 
@@ -57,57 +66,69 @@ const {
           document.documentElement.classList[isDark ? 'add' : 'remove']('dark');
         };
 
-        // Apply immediately on script load
         applyTheme();
-
-        // Re-apply after View Transitions swap
         document.addEventListener('astro:after-swap', applyTheme);
-
-        // Only observe user-initiated theme changes (from toggle button)
-        // The toggle button should call: localStorage.setItem('theme', newTheme)
-        // and then toggle the class, which this observer will NOT interfere with
       })();
     </script>
 
     <!-- View Transitions -->
-    <ViewTransitions />
+    <ViewTransitions fallback="animate" />
 
     <!-- Analytics (Umami) -->
     <script defer src="https://data.jessicamendez.bio/script.js" data-website-id="b7135bbc-1556-405c-97f7-2f50efc87437"></script>
   </head>
   <body class="min-h-screen bg-background text-foreground">
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">
+      Saltar al contenido principal
+    </a>
+
     <slot />
   </body>
 </html>
 
 <style is:global>
-  /* View Transition animations */
+  /* ============================================
+     VIEW TRANSITIONS - Organic Luxury
+     ============================================ */
+
+  /* Base page transitions (keyframes in global.css) */
   ::view-transition-old(root) {
-    animation: fade-out 0.3s ease-out forwards;
+    animation: fade-out 0.25s ease-out forwards;
   }
 
   ::view-transition-new(root) {
-    animation: fade-in 0.3s ease-in forwards;
+    animation: fade-in 0.25s ease-in forwards;
   }
 
-  @keyframes fade-out {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
+  /* ============================================
+     GLOBAL STYLES
+     ============================================ */
 
   /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
   }
 
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   /* Selection color */
   ::selection {
-    background-color: rgba(91, 124, 91, 0.2);
+    background-color: rgba(73, 99, 73, 0.2);
     color: #333333;
+  }
+
+  .dark ::selection {
+    background-color: rgba(143, 176, 143, 0.3);
+    color: #f5f1eb;
+  }
+
+  /* Scroll margin for anchor links */
+  [id] {
+    scroll-margin-top: 5rem;
   }
 </style>

@@ -87,7 +87,7 @@ const {
     </script>
 
     <!-- View Transitions -->
-    <ViewTransitions />
+    <ViewTransitions fallback="animate" />
 
     <!-- Analytics (Umami) -->
     <script defer src="https://data.jessicamendez.bio/script.js" data-website-id="b7135bbc-1556-405c-97f7-2f50efc87437"></script>
@@ -96,6 +96,11 @@ const {
     <slot name="head" />
   </head>
   <body class="min-h-screen bg-background text-foreground">
+    <!-- Skip link for accessibility -->
+    <a href="#main-content" class="skip-link">
+      Saltar al contenido principal
+    </a>
+
     <Header />
 
     <slot />
@@ -105,39 +110,13 @@ const {
 </html>
 
 <style is:global>
-  /* View Transition animations */
+  /* View Transition animations (keyframes in global.css) */
   ::view-transition-old(root) {
-    animation: fade-out 0.3s ease-out forwards;
+    animation: fade-out 0.25s ease-out forwards;
   }
 
   ::view-transition-new(root) {
-    animation: fade-in 0.3s ease-in forwards;
-  }
-
-  @keyframes fade-out {
-    from { opacity: 1; }
-    to { opacity: 0; }
-  }
-
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  /* Smooth scrolling */
-  html {
-    scroll-behavior: smooth;
-  }
-
-  /* Selection color */
-  ::selection {
-    background-color: rgba(91, 124, 91, 0.2);
-    color: #333333;
-  }
-
-  .dark ::selection {
-    background-color: rgba(143, 176, 143, 0.3);
-    color: #f5f1eb;
+    animation: fade-in 0.25s ease-in forwards;
   }
 
   /* ============================================
