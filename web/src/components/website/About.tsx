@@ -77,7 +77,7 @@ export function About() {
               </div>
 
               {/* Experience badge */}
-              <div className="absolute -bottom-4 -right-4 sm:-bottom-5 sm:-right-5 bg-verde-600 dark:bg-verde-500 text-white dark:text-verde-950 px-5 py-3 rounded-xl shadow-lg">
+              <div className="absolute -bottom-4 -right-4 sm:-bottom-5 sm:-right-5 bg-verde-600 dark:bg-verde-500 text-white px-5 py-3 rounded-xl shadow-lg">
                 <p className="text-2xl sm:text-3xl font-serif font-semibold">{profile.experience}</p>
                 <p className="text-xs uppercase tracking-wider opacity-90">de experiencia</p>
               </div>
