@@ -71,9 +71,9 @@ git push origin main        # Trigger deploy a producción
 **Triggers**: NocoDB, hub, base de datos, crear tabla, insertar registros, API NocoDB
 **Ubicación**: `.claude/skills/nocodb-manager/`
 
-#### `email-sender`
-**Triggers**: enviar email, email de bienvenida, confirmación, newsletter, notificación, correo, email transaccional
-**Ubicación**: `.claude/skills/email-sender/` | Resend + React Email
+#### `inbound-manager`
+**Triggers**: suscriptores, newsletter, broadcast, contactos, segments, topics, email marketing, lista de correo, enviar email, dominios resend
+**Ubicación**: `.claude/skills/inbound-manager/` | Resend API (56 scripts)
 
 #### `analytics-reporter`
 **Triggers**: analytics, métricas, visitas, tráfico, reportes, fuentes, campañas UTM, eventos, posts populares
