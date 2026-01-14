@@ -38,6 +38,7 @@ jobs:
             "dependencies": {
               "server-destroy": "^1.0.1",
               "send": "^1.1.0",
+              "piccolore": "^0.1.0",
               "resend": "^4.0.0",
               "@react-email/components": "^1.0.4",
               "@react-email/render": "^2.0.2"
