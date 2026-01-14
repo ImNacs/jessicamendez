@@ -11,11 +11,18 @@ interface Props {
 const { currentCategory } = Astro.props;
 ---
 
-<nav class="flex overflow-x-auto gap-2 sm:gap-3 pb-2 sm:pb-0 sm:flex-wrap sm:justify-center scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+<nav
+  role="navigation"
+  aria-label="Categorías del blog"
+  class="flex overflow-x-auto gap-2 sm:gap-3 pb-2 sm:pb-0 sm:flex-wrap sm:justify-center scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0"
+>
   <a
     href="/blog/"
+    aria-current={!currentCategory ? 'page' : undefined}
     class:list={[
-      'shrink-0 min-h-[44px] px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center',
+      'shrink-0 min-h-[44px] px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap flex items-center',
+      'transition-[background-color,box-shadow,transform] duration-200 ease-out',
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verde-500 focus-visible:ring-offset-2',
       !currentCategory
         ? 'bg-verde-600 text-white shadow-md'
         : 'bg-gris-100 dark:bg-verde-900/30 text-gris-600 dark:text-crema-300 hover:bg-gris-200 dark:hover:bg-verde-800/50'
@@ -31,8 +38,11 @@ const { currentCategory } = Astro.props;
     return (
       <a
         href={`/blog/categoria/${cat.toLowerCase()}/`}
+        aria-current={isActive ? 'page' : undefined}
         class:list={[
-          'shrink-0 min-h-[44px] px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-200 whitespace-nowrap flex items-center',
+          'shrink-0 min-h-[44px] px-4 py-2.5 rounded-full text-sm font-medium whitespace-nowrap flex items-center',
+          'transition-[background-color,box-shadow,transform] duration-200 ease-out',
+          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verde-500 focus-visible:ring-offset-2',
           isActive
             ? 'bg-verde-600 text-white shadow-md'
             : 'bg-gris-100 dark:bg-verde-900/30 text-gris-600 dark:text-crema-300 hover:bg-gris-200 dark:hover:bg-verde-800/50'

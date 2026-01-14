@@ -1,6 +1,6 @@
 ---
 /**
- * RelatedPosts - Related posts section
+ * RelatedPosts - Related posts section with stagger animation
  */
 import type { CollectionEntry } from 'astro:content';
 import { formatDate } from '@/lib/blog';
@@ -14,6 +14,9 @@ const { posts } = Astro.props;
 
 // Don't render if no related posts
 if (posts.length === 0) return null;
+
+// Stagger delay base (ms)
+const STAGGER_DELAY = 100;
 ---
 
 <section class="mt-16 pt-12 border-t border-border">
@@ -22,14 +25,15 @@ if (posts.length === 0) return null;
   </h2>
 
   <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-    {posts.map((post) => (
+    {posts.map((post, index) => (
       <a
         href={`/blog/${post.id}/`}
-        class="group block bg-gris-50 dark:bg-verde-900/20 rounded-xl p-5 border border-border hover:border-verde-300 dark:hover:border-verde-700 card-hover"
+        class="related-post-card group block bg-gris-50 dark:bg-verde-900/20 rounded-xl p-5 border border-border hover:border-verde-300 dark:hover:border-verde-700 transition-[border-color,transform,box-shadow] duration-200 ease-out hover:-translate-y-1 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-verde-500 focus-visible:ring-offset-2"
+        style={`--stagger-delay: ${index * STAGGER_DELAY}ms`}
       >
         <CategoryBadge category={post.data.category} size="sm" linked={false} />
 
-        <h3 class="mt-3 font-serif text-lg text-gris-900 dark:text-crema-100 group-hover:text-verde-700 dark:group-hover:text-verde-400 transition-colors line-clamp-2">
+        <h3 class="mt-3 font-serif text-lg text-gris-900 dark:text-crema-100 group-hover:text-verde-700 dark:group-hover:text-verde-400 transition-colors duration-200 line-clamp-2">
           {post.data.title}
         </h3>
 
@@ -43,3 +47,30 @@ if (posts.length === 0) return null;
     ))}
   </div>
 </section>
+
+<style>
+  .related-post-card {
+    opacity: 0;
+    animation: fadeInUp 0.4s ease-out forwards;
+    animation-delay: var(--stagger-delay, 0ms);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Respeta prefers-reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .related-post-card {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>
