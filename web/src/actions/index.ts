@@ -7,11 +7,13 @@ export const server = {
     accept: 'form',
     input: z.object({
       email: z.string().email('Por favor ingresa un email válido'),
-      audienceId: z.string().optional(),
+      type: z.enum(['newsletter', 'lead']).default('newsletter'),
     }),
-    handler: async ({ email, audienceId: customAudienceId }) => {
+    handler: async ({ email, type }) => {
       const apiKey = process.env.RESEND_API_KEY;
-      const audienceId = customAudienceId || process.env.RESEND_AUDIENCE_ID;
+      const audienceId = type === 'lead'
+        ? process.env.RESEND_AUDIENCE_LEADS
+        : process.env.RESEND_AUDIENCE_NEWSLETTER;
 
       if (!apiKey || !audienceId) {
         throw new ActionError({
