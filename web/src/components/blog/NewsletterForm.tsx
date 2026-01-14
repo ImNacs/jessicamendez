@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { actions } from 'astro:actions';
-import { Mail, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, CheckCircle, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -90,9 +91,20 @@ export function NewsletterForm({
 
   if (status === 'success') {
     return (
-      <div className={`${variant === 'card' ? 'p-6 rounded-xl border border-verde-200 dark:border-verde-800' : ''} bg-verde-50 dark:bg-verde-900/20 ${className}`}>
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+        className={`${variant === 'card' ? 'p-6 rounded-xl border border-verde-200 dark:border-verde-800' : ''} bg-verde-50 dark:bg-verde-900/20 ${className}`}
+      >
         <div className="flex items-center gap-3 text-verde-700 dark:text-verde-300">
-          <CheckCircle className="h-5 w-5 flex-shrink-0" />
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.1, type: 'spring', stiffness: 400, damping: 15 }}
+          >
+            <CheckCircle className="h-5 w-5 flex-shrink-0" />
+          </motion.div>
           <div>
             <p className="font-medium">¡Gracias por unirte!</p>
             <p className="text-sm text-verde-600 dark:text-verde-400">
@@ -100,7 +112,7 @@ export function NewsletterForm({
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
@@ -117,22 +129,26 @@ export function NewsletterForm({
           />
           <Button
             type="submit"
-            disabled={status === 'loading'}
+            isLoading={status === 'loading'}
             className="bg-verde-600 hover:bg-verde-700 text-white"
           >
-            {status === 'loading' ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              'Suscribirse'
-            )}
+            Suscribirse
           </Button>
         </div>
-        {status === 'error' && (
-          <p className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
-            <AlertCircle className="h-4 w-4" />
-            {errorMessage}
-          </p>
-        )}
+        <AnimatePresence>
+          {status === 'error' && (
+            <motion.p
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.2 }}
+              className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
+            >
+              <AlertCircle className="h-4 w-4" />
+              {errorMessage}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </form>
     );
   }
@@ -167,24 +183,25 @@ export function NewsletterForm({
         <EmailInput email={email} setEmail={setEmail} disabled={status === 'loading'} />
         <Button
           type="submit"
-          disabled={status === 'loading'}
+          isLoading={status === 'loading'}
           className="w-full bg-verde-600 hover:bg-verde-700 text-white"
         >
-          {status === 'loading' ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              Procesando...
-            </>
-          ) : (
-            'Recibir briefing gratis'
-          )}
+          {status === 'loading' ? 'Procesando...' : 'Recibir briefing gratis'}
         </Button>
-        {status === 'error' && (
-          <p className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
-            <AlertCircle className="h-4 w-4 flex-shrink-0" />
-            {errorMessage}
-          </p>
-        )}
+        <AnimatePresence>
+          {status === 'error' && (
+            <motion.p
+              initial={{ opacity: 0, y: -5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.2 }}
+              className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
+            >
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              {errorMessage}
+            </motion.p>
+          )}
+        </AnimatePresence>
       </form>
 
       <p className="mt-3 text-xs text-gris-500 dark:text-crema-400 text-center">
