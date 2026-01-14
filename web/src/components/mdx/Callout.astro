@@ -4,6 +4,7 @@
  * Usage: <Callout type="info">Your content here</Callout>
  *
  * Uses project color palette for consistent dark/light theme support
+ * SVG icons from Lucide for accessibility and scalability
  */
 interface Props {
   type?: 'info' | 'warning' | 'tip' | 'important' | 'note';
@@ -12,12 +13,19 @@ interface Props {
 
 const { type = 'info', title } = Astro.props;
 
+// SVG icons from Lucide (inline for performance)
+const icons = {
+  info: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>`,
+  warning: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
+  tip: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>`,
+  important: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`,
+  note: `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>`,
+};
+
 // Using project palette: verde, rosa, crema, gris
 const config = {
   info: {
-    icon: '💡',
     title: 'Información',
-    // Verde palette for info
     lightBg: 'bg-verde-50',
     darkBg: 'dark:bg-verde-900/40',
     lightBorder: 'border-verde-400',
@@ -26,11 +34,10 @@ const config = {
     darkText: 'dark:text-verde-100',
     lightIconBg: 'bg-verde-100',
     darkIconBg: 'dark:bg-verde-800/60',
+    iconColor: 'text-verde-600 dark:text-verde-400',
   },
   warning: {
-    icon: '⚠️',
     title: 'Advertencia',
-    // Rosa/terracotta for warnings
     lightBg: 'bg-rosa-50',
     darkBg: 'dark:bg-rosa-900/40',
     lightBorder: 'border-rosa-400',
@@ -39,11 +46,10 @@ const config = {
     darkText: 'dark:text-rosa-100',
     lightIconBg: 'bg-rosa-100',
     darkIconBg: 'dark:bg-rosa-800/60',
+    iconColor: 'text-rosa-600 dark:text-rosa-400',
   },
   tip: {
-    icon: '✨',
     title: 'Consejo',
-    // Verde accent for tips
     lightBg: 'bg-verde-50',
     darkBg: 'dark:bg-verde-900/40',
     lightBorder: 'border-verde-500',
@@ -52,11 +58,10 @@ const config = {
     darkText: 'dark:text-verde-100',
     lightIconBg: 'bg-verde-100',
     darkIconBg: 'dark:bg-verde-800/60',
+    iconColor: 'text-verde-600 dark:text-verde-400',
   },
   important: {
-    icon: '🔔',
     title: 'Importante',
-    // Rosa for important
     lightBg: 'bg-rosa-50',
     darkBg: 'dark:bg-rosa-900/40',
     lightBorder: 'border-rosa-500',
@@ -65,11 +70,10 @@ const config = {
     darkText: 'dark:text-rosa-100',
     lightIconBg: 'bg-rosa-100',
     darkIconBg: 'dark:bg-rosa-800/60',
+    iconColor: 'text-rosa-600 dark:text-rosa-400',
   },
   note: {
-    icon: '📝',
     title: 'Nota',
-    // Gris neutral for notes
     lightBg: 'bg-gris-50',
     darkBg: 'dark:bg-gris-800/40',
     lightBorder: 'border-gris-400',
@@ -78,27 +82,35 @@ const config = {
     darkText: 'dark:text-gris-100',
     lightIconBg: 'bg-gris-100',
     darkIconBg: 'dark:bg-gris-700/60',
+    iconColor: 'text-gris-600 dark:text-gris-400',
   },
 };
 
 const c = config[type];
 const displayTitle = title || c.title;
+const titleId = `callout-title-${Math.random().toString(36).slice(2, 9)}`;
 ---
 
-<aside class:list={[
-  'not-prose my-6 rounded-xl border-l-4 p-4 sm:p-5',
-  c.lightBg, c.darkBg,
-  c.lightBorder, c.darkBorder,
-]}>
+<aside
+  role="note"
+  aria-labelledby={titleId}
+  class:list={[
+    'not-prose my-6 rounded-xl border-l-4 p-4 sm:p-5',
+    c.lightBg, c.darkBg,
+    c.lightBorder, c.darkBorder,
+  ]}
+>
   <div class="flex items-start gap-3">
-    <span class:list={[
-      'flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-lg',
-      c.lightIconBg, c.darkIconBg,
-    ]}>
-      {c.icon}
+    <span
+      class:list={[
+        'flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center',
+        c.lightIconBg, c.darkIconBg, c.iconColor,
+      ]}
+    >
+      <Fragment set:html={icons[type]} />
     </span>
     <div class="flex-1 min-w-0">
-      <p class:list={['font-semibold text-sm mb-1', c.lightText, c.darkText]}>
+      <p id={titleId} class:list={['font-semibold text-sm mb-1', c.lightText, c.darkText]}>
         {displayTitle}
       </p>
       <div class:list={['text-sm leading-relaxed', c.lightText, c.darkText, 'opacity-90 dark:opacity-95']}>

@@ -2,33 +2,58 @@
 /**
  * Figure - Image with caption for MDX content
  * Usage: <Figure src="/images/blog/example.jpg" alt="Description" caption="Figure 1: Example" />
+ *        <Figure src="/images/blog/wide.jpg" alt="Wide image" width={1200} height={630} fullWidth />
  *
  * Uses project color palette for consistent dark/light theme support
+ * Includes explicit dimensions to prevent CLS (Cumulative Layout Shift)
  */
 interface Props {
   src: string;
   alt: string;
   caption?: string;
   fullWidth?: boolean;
+  /** Image width for aspect ratio - prevents CLS */
+  width?: number;
+  /** Image height for aspect ratio - prevents CLS */
+  height?: number;
 }
 
-const { src, alt, caption, fullWidth = false } = Astro.props;
+const { src, alt, caption, fullWidth = false, width, height } = Astro.props;
+
+// Calculate aspect ratio for placeholder sizing
+const aspectRatio = width && height ? `${width} / ${height}` : undefined;
 ---
 
 <figure class:list={[
   'not-prose my-8',
   fullWidth ? 'w-full' : 'max-w-2xl mx-auto'
 ]}>
-  <img
-    src={src}
-    alt={alt}
-    loading="lazy"
-    decoding="async"
-    class="w-full rounded-xl border border-verde-200/50 dark:border-verde-700/50 shadow-md dark:shadow-lg dark:shadow-black/20"
-  />
+  <div
+    class="relative overflow-hidden rounded-xl border border-verde-200/50 dark:border-verde-700/50 shadow-md dark:shadow-lg dark:shadow-black/20 bg-gris-100 dark:bg-verde-900/30"
+    style={aspectRatio ? `aspect-ratio: ${aspectRatio}` : undefined}
+  >
+    <img
+      src={src}
+      alt={alt}
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+      class="w-full h-full object-cover transition-opacity duration-300"
+      onload="this.style.opacity='1'"
+      style="opacity: 0"
+    />
+  </div>
   {caption && (
     <figcaption class="mt-3 text-center text-sm italic text-gris-500 dark:text-crema-400">
       {caption}
     </figcaption>
   )}
 </figure>
+
+<style>
+  /* Fallback for images without explicit dimensions */
+  figure img:not([width]) {
+    opacity: 1 !important;
+  }
+</style>
