@@ -11,14 +11,14 @@ export const profile = {
   shortName: "Jessica Méndez",
   title: "Consultora Ambiental y en Sostenibilidad",
   tagline: "Transformo riesgos ambientales en ventajas competitivas",
-  experience: "9+ años",
+  experience: "10+ años",
   email: "contacto@jessicamendez.bio",
   phone: "+52 55 6430 4586",
   website: "jessicamendez.bio",
   linkedin: "https://www.linkedin.com/in/jessica-viridiana-m%C3%A9ndez-g%C3%B3mez-3b30371aa/",
   location: "Ciudad de México, México",
   specialties: ["ESG", "IFC", "Principios de Ecuador", "Regulación Ambiental"],
-  sectors: ["Infraestructura", "Energía", "Construcción", "Oil & Gas"],
+  sectors: ["Infraestructura", "Energía", "Construcción", "Oil & Gas", "Minería"],
 }
 
 // Trayectoria profesional
@@ -26,7 +26,7 @@ export const experience = [
   {
     company: "MEXTYPSA",
     role: "Directora de departamento de Medio Ambiente",
-    period: "2024 - Presente",
+    period: "2024 - 2025",
     description: "Liderazgo de proyectos ambientales estratégicos",
   },
   {
