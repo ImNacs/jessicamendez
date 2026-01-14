@@ -5,10 +5,11 @@
  */
 import { Button } from '@/components/ui/button';
 import { LeadMagnetForm } from '@/components/blog/LeadMagnetForm';
-import { profile } from '@/lib/utils';
+import { profile, hero } from '@/lib/content';
 
+// TODO: Mover a sistema de forms cuando se implemente
 const leadMagnetConfig = {
-  id: 'due_diligence_esg',
+  id: hero.leadMagnetId,
   label: 'Guía gratuita',
   title: 'Due Diligence ESG',
   description: 'Lo que evalúan los bancos antes de financiar',
@@ -20,19 +21,6 @@ const leadMagnetConfig = {
   buttonText: 'Descargar gratis',
   badge: '+500 descargas',
 };
-
-const credentials = [
-  'IFC Performance Standards',
-  'Principios de Ecuador',
-  'SEMARNAT',
-];
-
-const sectors = [
-  { name: 'Energía Renovable', icon: 'zap' },
-  { name: 'Infraestructura', icon: 'building' },
-  { name: 'Minería', icon: 'mountain' },
-  { name: 'Oil & Gas', icon: 'flame' },
-];
 ---
 
 <section
@@ -70,7 +58,7 @@ const sectors = [
                    rounded-full text-sm text-verde-700 dark:text-verde-300"
           >
             <span class="w-2 h-2 rounded-full bg-verde-500 animate-pulse" aria-hidden="true"></span>
-            Consultora Ambiental Senior · {profile.experience}
+            {hero.badge} · {profile.experience}
           </span>
         </div>
 
@@ -78,10 +66,10 @@ const sectors = [
         <h1
           class="mt-6 mb-6 text-gris-900 dark:text-crema-100 animate-reveal-up stagger-2"
         >
-          <span class="block">Tu aliada en</span>
-          <span class="block text-verde-600 dark:text-verde-400">regulación ambiental</span>
+          <span class="block">{hero.headline.line1}</span>
+          <span class="block text-verde-600 dark:text-verde-400">{hero.headline.line2}</span>
           <span class="block">
-            y <span class="text-rosa-500 dark:text-rosa-400">financiamiento sostenible</span>
+            y <span class="text-rosa-500 dark:text-rosa-400">{hero.headline.line3.replace('y ', '')}</span>
           </span>
         </h1>
 
@@ -89,8 +77,7 @@ const sectors = [
         <p
           class="text-base sm:text-lg text-gris-600 dark:text-crema-300 max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed animate-reveal-up stagger-3"
         >
-          Acompaño a desarrolladores de proyectos y entidades financieras en la
-          obtención de permisos ambientales y cumplimiento de estándares internacionales.
+          {hero.subtitle}
         </p>
 
         <!-- CTAs -->
@@ -100,7 +87,7 @@ const sectors = [
             className="group gap-2 bg-verde-600 hover:bg-verde-700 dark:bg-verde-500 dark:hover:bg-verde-400 text-white text-base px-8 py-6 shadow-lg shadow-verde-600/20 hover:shadow-xl hover:shadow-verde-600/30 transition-all duration-300"
           >
             <a href="#contacto" class="flex items-center gap-2" data-astro-prefetch="load">
-              Agenda una consulta
+              {hero.cta.primary}
               <svg
                 class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
                 fill="none"
@@ -122,14 +109,14 @@ const sectors = [
               <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
-              Ver servicios
+              {hero.cta.secondary}
             </a>
           </Button>
         </div>
 
         <!-- Credentials -->
         <div class="flex flex-wrap justify-center lg:justify-start gap-3 mt-8 animate-reveal-up stagger-5">
-          {credentials.map((credential) => (
+          {hero.credentials.map((credential) => (
             <span class="inline-flex items-center gap-1.5 text-sm text-gris-600 dark:text-crema-400">
               <svg class="h-4 w-4 text-verde-500 dark:text-verde-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
@@ -151,13 +138,13 @@ const sectors = [
       class="mt-16 pt-8 border-t border-gris-200 dark:border-verde-800 animate-reveal-up stagger-6"
     >
       <p class="text-sm text-gris-500 dark:text-crema-400 text-center lg:text-left mb-4 uppercase tracking-wider">
-        Especialista en sectores de alto impacto
+        {hero.sectorsLabel}
       </p>
       <div class="flex flex-wrap justify-center lg:justify-start items-center gap-6 sm:gap-8">
-        {sectors.map((sector, index) => (
+        {hero.sectors.map((sector, index) => (
           <span class="flex items-center gap-2 text-sm font-medium text-gris-600 dark:text-crema-300 hover:text-verde-600 dark:hover:text-verde-400 transition-colors cursor-default">
             {sector.name}
-            {index < sectors.length - 1 && (
+            {index < hero.sectors.length - 1 && (
               <span class="hidden sm:inline text-gris-300 dark:text-verde-700 ml-4">•</span>
             )}
           </span>
@@ -176,7 +163,7 @@ const sectors = [
       class="flex flex-col items-center gap-1 text-gris-400 dark:text-crema-500 hover:text-verde-600 dark:hover:text-verde-400 transition-colors"
       aria-label="Scroll para ver más"
     >
-      <span class="text-xs uppercase tracking-widest">Descubre</span>
+      <span class="text-xs uppercase tracking-widest">{hero.scrollLabel}</span>
       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
       </svg>

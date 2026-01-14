@@ -11,7 +11,7 @@ import CategoryBadge from '@/components/blog/CategoryBadge.astro';
 import { ShareButtons, ReadingProgress, MobileBottomToolbar, TableOfContents, LeadMagnetForm } from '@/components/blog';
 import JsonLd from '@/components/seo/JsonLd.astro';
 import { calculateReadingTime, categoryConfig } from '@/lib/blog';
-import { profile } from '@/lib/utils';
+import { profile } from '@/lib/content';
 
 export async function getStaticPaths() {
   // Show drafts in development, hide in production

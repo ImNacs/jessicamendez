@@ -2,32 +2,13 @@
 
 import { motion } from 'framer-motion';
 import { CheckCircle, Award, Globe, Users } from 'lucide-react';
-import { profile } from '@/lib/utils';
+import { profile, about } from '@/lib/content';
 
-const differentiators = [
-  {
-    icon: Award,
-    title: 'Experiencia comprobada',
-    description: 'Track record en proyectos de infraestructura, energía y minería.',
-  },
-  {
-    icon: Globe,
-    title: 'Estándares internacionales',
-    description: 'Dominio de IFC Performance Standards y Principios de Ecuador.',
-  },
-  {
-    icon: Users,
-    title: 'Enfoque integral',
-    description: 'Gestión ambiental y social con visión de financiamiento.',
-  },
-];
-
-const highlights = [
-  'Gestión de proyectos ante SEMARNAT y autoridades ambientales',
-  'Due diligence para bancos de desarrollo y fondos de inversión',
-  'Planes de gestión ambiental y social (PGAS)',
-  'Consulta pública y relacionamiento comunitario',
-];
+const iconMap = {
+  Award,
+  Globe,
+  Users,
+};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -79,7 +60,7 @@ export function About() {
               {/* Experience badge */}
               <div className="absolute -bottom-4 -right-4 sm:-bottom-5 sm:-right-5 bg-verde-600 dark:bg-verde-500 text-white px-5 py-3 rounded-xl shadow-lg">
                 <p className="text-2xl sm:text-3xl font-serif font-semibold">{profile.experience}</p>
-                <p className="text-xs uppercase tracking-wider opacity-90">de experiencia</p>
+                <p className="text-xs uppercase tracking-wider opacity-90">{about.experienceBadge}</p>
               </div>
             </div>
           </motion.div>
@@ -94,7 +75,7 @@ export function About() {
           >
             {/* Section label */}
             <span className="text-sm text-rosa-500 dark:text-rosa-400 uppercase tracking-wider mb-3 block">
-              Sobre mí
+              {about.sectionLabel}
             </span>
 
             <h2 className="text-gris-900 dark:text-crema-100 mb-2">
@@ -105,9 +86,7 @@ export function About() {
             </p>
 
             <p className="text-base sm:text-lg text-gris-700 dark:text-crema-300 mb-6 leading-relaxed">
-              Consultora independiente especializada en la gestión ambiental y social
-              de proyectos de infraestructura, energía y minería, con experiencia en
-              México, Centroamérica y República Dominicana.
+              {about.description}
             </p>
 
             {/* Key highlights */}
@@ -118,7 +97,7 @@ export function About() {
               viewport={{ once: true }}
               className="space-y-3 mb-6"
             >
-              {highlights.map((item, index) => (
+              {about.highlights.map((item, index) => (
                 <motion.li
                   key={index}
                   variants={itemVariants}
@@ -138,8 +117,7 @@ export function About() {
             {/* Quote */}
             <div className="p-5 bg-white dark:bg-verde-900/40 border-l-4 border-verde-500 dark:border-verde-400 rounded-r-xl shadow-sm">
               <p className="text-verde-800 dark:text-verde-200 italic font-serif text-base sm:text-lg leading-relaxed">
-                "Combino conocimiento normativo local con estándares internacionales
-                para crear valor sostenible en cada proyecto."
+                "{about.quote}"
               </p>
             </div>
           </motion.div>
@@ -153,8 +131,8 @@ export function About() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mt-16 grid sm:grid-cols-3 gap-6"
         >
-          {differentiators.map((item, index) => {
-            const Icon = item.icon;
+          {about.differentiators.map((item, index) => {
+            const Icon = iconMap[item.icon as keyof typeof iconMap];
             return (
               <div
                 key={index}

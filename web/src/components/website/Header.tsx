@@ -2,14 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Menu, X, Sun, Moon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ui/mode-toggle';
-import { profile } from '@/lib/utils';
-
-const navLinks = [
-  { href: '#inicio', label: 'Inicio' },
-  { href: '#servicios', label: 'Servicios' },
-  { href: '#acerca', label: 'Acerca de mí' },
-  { href: '#experiencia', label: 'Experiencia' },
-];
+import { profile, navigation } from '@/lib/content';
 
 export function Header() {
   const headerRef = useRef<HTMLElement>(null);
@@ -76,7 +69,7 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
+          {navigation.main.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -146,7 +139,7 @@ export function Header() {
         {/* Navigation Links */}
         <nav className="flex-1 overflow-y-auto px-4 py-6">
           <ul className="space-y-1">
-            {navLinks.map((link) => (
+            {navigation.main.map((link) => (
               <li key={link.href}>
                 <a
                   href={link.href}

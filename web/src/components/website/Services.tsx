@@ -12,70 +12,14 @@ import {
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { services } from '@/lib/content';
 
-// Servicios ordenados por demanda según investigación
-const services = [
-  {
-    id: 'due-diligence',
-    icon: Search,
-    title: 'Due Diligence Ambiental y Social',
-    shortTitle: 'Due Diligence',
-    description: 'Evaluación de riesgos ESG para transacciones, inversiones y financiamiento de proyectos.',
-    details: [
-      'Evaluación de pasivos ambientales',
-      'Análisis de cumplimiento normativo',
-      'Gap analysis vs estándares IFC',
-      'Planes de acción correctiva',
-    ],
-    clients: 'Fondos de inversión, bancos, corporativos',
-    highlight: true,
-  },
-  {
-    id: 'esia',
-    icon: FileText,
-    title: 'Evaluaciones de Impacto',
-    shortTitle: 'MIA / ESIA',
-    description: 'Manifestaciones de Impacto Ambiental y estudios técnicos para autorización de proyectos.',
-    details: [
-      'MIA Particular y Regional',
-      'Estudios Técnicos Justificativos (ETJ)',
-      'Evaluación de Impacto Social (EVIS)',
-      'Gestión de permisos ante SEMARNAT',
-    ],
-    clients: 'Desarrolladores de proyectos',
-    highlight: true,
-  },
-  {
-    id: 'ifc',
-    icon: Shield,
-    title: 'Cumplimiento IFC y Principios de Ecuador',
-    shortTitle: 'Estándares Internacionales',
-    description: 'Alineación con estándares de financiamiento internacional para proyectos de inversión.',
-    details: [
-      'IFC Performance Standards',
-      'Principios de Ecuador (EP4)',
-      'Planes de Gestión Ambiental y Social',
-      'Mecanismos de quejas y reclamos',
-    ],
-    clients: 'Proyectos con financiamiento multilateral',
-    highlight: true,
-  },
-  {
-    id: 'esg',
-    icon: TrendingUp,
-    title: 'Consultoría ESG y Sostenibilidad',
-    shortTitle: 'ESG',
-    description: 'Estrategias de sostenibilidad corporativa y reportes para inversionistas.',
-    details: [
-      'Diagnósticos ESG',
-      'Estrategias de descarbonización',
-      'Reportes de sostenibilidad (GRI, SASB)',
-      'Evaluación de riesgos climáticos',
-    ],
-    clients: 'Corporativos, empresas listadas',
-    highlight: false,
-  },
-];
+const iconMap = {
+  Search,
+  FileText,
+  Shield,
+  TrendingUp,
+};
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -117,13 +61,13 @@ export function Services() {
           className="text-center mb-12"
         >
           <span className="text-sm text-rosa-500 dark:text-rosa-400 uppercase tracking-wider mb-3 block">
-            Consultoría
+            {services.sectionLabel}
           </span>
           <h2 className="text-gris-900 dark:text-crema-100 mb-4">
-            Servicios Especializados
+            {services.title}
           </h2>
           <p className="text-base sm:text-lg text-gris-600 dark:text-crema-300 max-w-2xl mx-auto">
-            Soluciones integrales desde la factibilidad hasta la operación de tu proyecto
+            {services.subtitle}
           </p>
         </motion.div>
 
@@ -135,8 +79,8 @@ export function Services() {
           viewport={{ once: true, margin: '-50px' }}
           className="grid sm:grid-cols-2 gap-4 sm:gap-6 max-w-4xl mx-auto"
         >
-          {services.map((service) => {
-            const Icon = service.icon;
+          {services.items.map((service) => {
+            const Icon = iconMap[service.icon as keyof typeof iconMap];
             const isExpanded = expandedId === service.id;
             // En desktop siempre mostrar detalles, en móvil usar expand
             const showDetails = !isMobile || isExpanded;
@@ -228,14 +172,14 @@ export function Services() {
           className="text-center mt-10"
         >
           <p className="text-sm text-gris-500 dark:text-crema-400 mb-4">
-            ¿No encuentras lo que buscas? Ofrezco soluciones personalizadas.
+            {services.cta.text}
           </p>
           <Button
             variant="outline"
             className="border-verde-300 dark:border-verde-600 text-verde-700 dark:text-verde-300 hover:bg-verde-100 hover:text-verde-800 dark:hover:bg-verde-900/50 dark:hover:text-verde-200"
             asChild
           >
-            <a href="#contacto">Consultar otros servicios</a>
+            <a href="#contacto">{services.cta.button}</a>
           </Button>
         </motion.div>
       </div>

@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import { Mail, Phone, Linkedin, MapPin, MessageCircle, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { profile } from '@/lib/utils';
+import { profile, contact } from '@/lib/content';
 
 export function Contact() {
   return (
@@ -18,13 +18,13 @@ export function Contact() {
           className="text-center mb-10 sm:mb-12"
         >
           <span className="text-sm text-rosa-300 dark:text-rosa-400 uppercase tracking-wider mb-3 block">
-            Contacto
+            {contact.sectionLabel}
           </span>
           <h2 className="text-white mb-3">
-            Trabajemos Juntos
+            {contact.title}
           </h2>
           <p className="text-base sm:text-lg text-verde-100 dark:text-verde-200 max-w-xl mx-auto">
-            ¿Tienes un proyecto que requiere gestión ambiental o cumplimiento de estándares internacionales?
+            {contact.subtitle}
           </p>
         </motion.div>
 
@@ -44,7 +44,7 @@ export function Contact() {
             >
               <a href={`mailto:${profile.email}`}>
                 <Mail className="h-5 w-5" />
-                Enviar email
+                {contact.cta.email}
               </a>
             </Button>
             <Button
@@ -55,7 +55,7 @@ export function Contact() {
             >
               <a href={`tel:${profile.phone.replace(/\s/g, '')}`}>
                 <Phone className="h-5 w-5" />
-                Llamar ahora
+                {contact.cta.phone}
               </a>
             </Button>
           </div>
@@ -76,8 +76,8 @@ export function Contact() {
                 <Clock className="h-5 w-5 text-rosa-300 dark:text-rosa-400" />
               </div>
               <div>
-                <p className="font-medium">Respuesta en menos de 24 horas</p>
-                <p className="text-sm text-verde-200 dark:text-verde-300">Para proyectos urgentes, llámame directamente</p>
+                <p className="font-medium">{contact.responseTime.title}</p>
+                <p className="text-sm text-verde-200 dark:text-verde-300">{contact.responseTime.subtitle}</p>
               </div>
             </div>
 
@@ -91,7 +91,7 @@ export function Contact() {
                   <Mail className="h-5 w-5" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm text-verde-200 dark:text-verde-300">Email</p>
+                  <p className="text-sm text-verde-200 dark:text-verde-300">{contact.labels.email}</p>
                   <p className="text-white truncate">{profile.email}</p>
                 </div>
               </a>
@@ -104,7 +104,7 @@ export function Contact() {
                   <Phone className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-verde-200 dark:text-verde-300">Teléfono</p>
+                  <p className="text-sm text-verde-200 dark:text-verde-300">{contact.labels.phone}</p>
                   <p className="text-white">{profile.phone}</p>
                 </div>
               </a>
@@ -119,8 +119,8 @@ export function Contact() {
                   <Linkedin className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-verde-200 dark:text-verde-300">LinkedIn</p>
-                  <p className="text-white">jessicamendezgomez</p>
+                  <p className="text-sm text-verde-200 dark:text-verde-300">{contact.labels.linkedin}</p>
+                  <p className="text-white">{contact.labels.linkedinHandle}</p>
                 </div>
               </a>
 
@@ -129,7 +129,7 @@ export function Contact() {
                   <MapPin className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="text-sm text-verde-200 dark:text-verde-300">Ubicación</p>
+                  <p className="text-sm text-verde-200 dark:text-verde-300">{contact.labels.location}</p>
                   <p className="text-white">{profile.location}</p>
                 </div>
               </div>
@@ -140,9 +140,7 @@ export function Contact() {
               <div className="flex items-start gap-3">
                 <MessageCircle className="h-5 w-5 text-rosa-300 dark:text-rosa-400 mt-0.5 shrink-0" />
                 <p className="text-sm text-verde-100 dark:text-verde-200">
-                  Trabajo con <span className="text-white font-medium">desarrolladores de proyectos</span>,{' '}
-                  <span className="text-white font-medium">fondos de inversión</span> y{' '}
-                  <span className="text-white font-medium">bancos de desarrollo</span> en México, Centroamérica y el Caribe.
+                  {contact.workWith}
                 </p>
               </div>
             </div>

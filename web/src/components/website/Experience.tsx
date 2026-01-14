@@ -3,14 +3,7 @@
 import { motion } from 'framer-motion';
 import { Building2, MapPin } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { experience } from '@/lib/utils';
-
-// Regions with accessible labels
-const regions = [
-  { name: 'México', flag: '🇲🇽', code: 'MX' },
-  { name: 'Centroamérica', flag: '🌎', code: 'LATAM' },
-  { name: 'Rep. Dominicana', flag: '🇩🇴', code: 'DO' },
-];
+import { experience } from '@/lib/content';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -42,14 +35,14 @@ export function Experience() {
           className="text-center mb-12"
         >
           <span className="text-sm text-rosa-500 dark:text-rosa-400 uppercase tracking-wider mb-3 block">
-            Trayectoria
+            {experience.sectionLabel}
           </span>
           <h2 className="text-gris-900 dark:text-crema-100 mb-4">
-            Más de una década <br className="hidden sm:block" />
-            <span className="text-verde-600 dark:text-verde-400">transformando proyectos</span>
+            {experience.title.line1} <br className="hidden sm:block" />
+            <span className="text-verde-600 dark:text-verde-400">{experience.title.line2}</span>
           </h2>
           <p className="text-base sm:text-lg text-gris-600 dark:text-crema-300 max-w-xl mx-auto">
-            Experiencia en proyectos de alto impacto para el sector privado y financiero
+            {experience.subtitle}
           </p>
         </motion.div>
 
@@ -61,12 +54,12 @@ export function Experience() {
           viewport={{ once: true, margin: '-50px' }}
           className="max-w-2xl mx-auto mb-12"
         >
-          {experience.map((exp, index) => (
+          {experience.timeline.map((exp, index) => (
             <motion.article
               key={`${exp.company}-${exp.role}`}
               variants={itemVariants}
               className={`relative pl-8 sm:pl-10 pb-10 ${
-                index < experience.length - 1 ? 'border-l-2 border-verde-200 dark:border-verde-800' : ''
+                index < experience.timeline.length - 1 ? 'border-l-2 border-verde-200 dark:border-verde-800' : ''
               }`}
             >
               {/* Timeline dot */}
@@ -115,12 +108,12 @@ export function Experience() {
         >
           <div className="flex items-center justify-center gap-2 mb-6">
             <MapPin className="h-5 w-5" aria-hidden="true" />
-            <h3 className="text-lg sm:text-xl font-serif">Alcance Regional</h3>
+            <h3 className="text-lg sm:text-xl font-serif">{experience.regions.title}</h3>
           </div>
 
           {/* Regions with accessible flags */}
           <div className="flex flex-wrap justify-center gap-6 sm:gap-10 mb-6">
-            {regions.map((region) => (
+            {experience.regions.items.map((region) => (
               <div key={region.code} className="flex flex-col items-center gap-2">
                 <span
                   className="text-3xl sm:text-4xl"
@@ -142,8 +135,7 @@ export function Experience() {
           </div>
 
           <p className="text-verde-100 dark:text-verde-200 text-sm sm:text-base text-center max-w-lg mx-auto">
-            Alianzas estratégicas y experiencia liderando equipos multidisciplinarios
-            en proyectos internacionales.
+            {experience.regions.description}
           </p>
         </motion.div>
       </div>
