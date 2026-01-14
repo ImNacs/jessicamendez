@@ -202,12 +202,19 @@ const leadMagnetConfig = {
           <!-- Author Box -->
           <div class="mt-12">
             <div class="p-6 bg-crema-100 dark:bg-verde-900/30 rounded-2xl border border-verde-200 dark:border-verde-800 flex flex-col sm:flex-row items-center sm:items-start gap-4">
-              <img
-                src="/jessicamendez.webp"
-                alt={profile.name}
-                class="w-20 h-20 rounded-full object-cover object-top border-4 border-white dark:border-verde-800 shadow-lg flex-shrink-0"
-                loading="lazy"
-              />
+              <picture>
+                <source srcset="/jessicamendez.avif" type="image/avif" />
+                <source srcset="/jessicamendez.webp" type="image/webp" />
+                <img
+                  src="/jessicamendez.webp"
+                  alt={profile.name}
+                  class="w-20 h-20 rounded-full object-cover object-top border-4 border-white dark:border-verde-800 shadow-lg flex-shrink-0"
+                  width="80"
+                  height="80"
+                  loading="lazy"
+                  decoding="async"
+                />
+              </picture>
               <div class="text-center sm:text-left">
                 <p class="font-serif text-xl text-verde-800 dark:text-verde-300 font-semibold">
                   {profile.name}

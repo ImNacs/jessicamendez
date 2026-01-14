@@ -49,12 +49,20 @@ export function About() {
 
               {/* Image container */}
               <div className="relative bg-white dark:bg-verde-900/50 p-2 rounded-2xl shadow-xl dark:shadow-verde-900/30">
-                <img
-                  src="/jessicamendez.webp"
-                  alt="Jessica Méndez - Bióloga y Consultora Ambiental"
-                  className="w-full h-auto rounded-xl"
-                  loading="lazy"
-                />
+                <picture>
+                  <source srcSet="/jessicamendez.avif" type="image/avif" />
+                  <source srcSet="/jessicamendez.webp" type="image/webp" />
+                  <img
+                    src="/jessicamendez.webp"
+                    alt="Jessica Méndez - Bióloga y Consultora Ambiental"
+                    className="w-full h-auto rounded-xl"
+                    width={800}
+                    height={1365}
+                    loading="lazy"
+                    decoding="async"
+                    fetchPriority="low"
+                  />
+                </picture>
               </div>
 
               {/* Experience badge */}
