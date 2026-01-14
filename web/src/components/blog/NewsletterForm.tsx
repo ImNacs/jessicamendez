@@ -44,11 +44,6 @@ export function NewsletterForm({
   variant = 'card',
   className = '',
 }: NewsletterFormProps) {
-  // TODO: Habilitar cuando se configure el dominio en Resend
-  if (import.meta.env.PROD) {
-    return null;
-  }
-
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<FormStatus>('idle');
   const [errorMessage, setErrorMessage] = useState('');
