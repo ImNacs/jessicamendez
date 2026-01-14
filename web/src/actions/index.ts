@@ -7,10 +7,11 @@ export const server = {
     accept: 'form',
     input: z.object({
       email: z.string().email('Por favor ingresa un email válido'),
+      audienceId: z.string().optional(),
     }),
-    handler: async ({ email }) => {
+    handler: async ({ email, audienceId: customAudienceId }) => {
       const apiKey = process.env.RESEND_API_KEY;
-      const audienceId = process.env.RESEND_AUDIENCE_ID;
+      const audienceId = customAudienceId || process.env.RESEND_AUDIENCE_ID;
 
       if (!apiKey || !audienceId) {
         throw new ActionError({

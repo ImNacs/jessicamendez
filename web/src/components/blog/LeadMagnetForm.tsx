@@ -21,6 +21,8 @@ interface LeadMagnetConfig {
   buttonText?: string;
   /** Badge opcional (ej: "+500 descargas") - solo para variante card */
   badge?: string;
+  /** ID de audiencia en Resend (si es diferente al default) */
+  audienceId?: string;
 }
 
 interface LeadMagnetFormProps {
@@ -83,7 +85,9 @@ export function LeadMagnetForm({
     try {
       const formData = new FormData();
       formData.append('email', email);
-      formData.append('source', `lead_magnet_${config.id}`);
+      if (config.audienceId) {
+        formData.append('audienceId', config.audienceId);
+      }
 
       const { error } = await actions.subscribe(formData);
 
