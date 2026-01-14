@@ -37,7 +37,8 @@ jobs:
             "type": "module",
             "dependencies": {
               "server-destroy": "^1.0.1",
-              "send": "^1.1.0"
+              "send": "^1.1.0",
+              "resend": "^4.0.0"
             }
           }
           EOF
