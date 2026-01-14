@@ -1,6 +1,7 @@
 import { defineAction, ActionError } from 'astro:actions';
 import { z } from 'astro:schema';
 import { Resend } from 'resend';
+import { BienvenidaEmail } from '../emails/bienvenida';
 
 export const server = {
   subscribe: defineAction({
@@ -29,6 +30,16 @@ export const server = {
           email,
           audienceId,
         });
+
+        // Enviar email de bienvenida solo para newsletter
+        if (type === 'newsletter') {
+          await resend.emails.send({
+            from: 'Jessica Méndez <contacto@jessicamendez.bio>',
+            to: email,
+            subject: '¡Bienvenido/a al Briefing Ambiental!',
+            react: BienvenidaEmail({ nombre: 'Suscriptor' }),
+          });
+        }
 
         return { success: true };
       } catch (error) {
